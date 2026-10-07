@@ -14,7 +14,14 @@ Before assuming what the main business problem is, the first objective of this p
 
 ## Initial Business Question
 
-**How has Olist's sales performance evolved over time, and what factors may explain periods or segments of underperformance?**
+**How did Olist's sales performance change between January–October 2017 and January–October 2018, and what factors explain this evolution?**
+
+### Analysis Period
+
+An initial exploration of the order data showed that 2016 contains only a limited number of orders, while 2018 data ends in October.
+
+To ensure a fair year-over-year comparison, the main analysis therefore focuses on the same 10-month period: **January to October 2017 vs January to October 2018**.
+
 
 The analysis will first examine sales performance over time.
 
