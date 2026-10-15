@@ -1,12 +1,12 @@
 # Olist E-commerce SQL Analysis
 
-**How did sales performance change between January–August 2017 and January–August 2018, and what factors are associated with that change?**
+**How did sales performance change between Januaryâ€“August 2017 and Januaryâ€“August 2018, and what factors are associated with that change?**
 
 I use SQL Server to investigate this question with the Brazilian Olist e-commerce dataset. My approach is to start with overall performance, test possible explanations, and check data quality before developing business recommendations.
 
 ## Key Results
 
-| Indicator | Jan–Aug 2017 | Jan–Aug 2018 |
+| Indicator | Janâ€“Aug 2017 | Janâ€“Aug 2018 |
 | --- | ---: | ---: |
 | Item sales (R$) | 3,113,000.32 | 7,385,905.80 |
 | Orders | 22,968 | 53,991 |
@@ -23,27 +23,28 @@ The state-level analysis found that:
 - Sellers recorded in SP accounted for about **65% of item sales in each period** and **65.12% of the overall sales increase**.
 - MA, PA, and PI appeared among active seller states in 2018 and contributed **R$ 39,168.95**, about **0.92% of the overall increase**. AM was present in 2017 and absent in 2018, giving a net increase of two states.
 
-These results were obtained during the analysis. Supporting queries have now been recovered, corrected, or reconstructed from the working record and linked below. **The prepared scripts have not yet been rerun in SQL Server.** Recovered historical outputs are preserved in the downloadable archive; they are not exports from a new database run. Geographic allocations remain provisional while seller-location anomalies are investigated.
+The period totals, category counts and category appearance/disappearance checks, unique buyers, product-reference counts, active sellers, and state tables were **rerun in SSMS on 15 October 2026** and matched the recorded results. See the [queries executed](sql/08_verified_queries_2026_10_15.sql) and [saved result transcriptions](VERIFIED_RESULTS_2026_10_15.md). The SP city-label count remains provisional, and geographic allocations still depend on unresolved location anomalies.
 
 ## SQL Queries and Repository Guide
 
-Click a query name to open its SQL file. Each script header distinguishes recovered code from corrected or reconstructed code. The analysis scripts use read-only queries; the database setup file creates the database and tables and should not be rerun on an existing database.
+Click a script or output to open it. The verification script records the query logic executed in SSMS; outputs were copied by the analyst into the project conversation and transcribed into the linked results file. This does not mean that every query in every archived script was rerun.
 
-| Step | SQL file | Recovery status |
+| Step | Script | Output / verification status |
 | --- | --- | --- |
-| Database setup | [Create the database and nine tables](sql/01_database_setup.sql) | Existing setup script; CSV import is separate |
-| Monthly exploration | [Monthly order volume](01_monthly_order_volume.sql) | Existing script, also recovered from the working record |
-| Period comparison | [Item sales and orders](sql/02_sales_and_orders.sql) | Order query recovered; sales query reconstructed |
-| Product categories | [Category counts, sales, and appearing categories](sql/03_categories.sql) | 2017 count recovered; comparative queries reconstructed |
-| Buyers and references | [Unique buyers and product references](sql/04_buyers_and_products.sql) | Buyer syntax corrected; product queries reconstructed |
-| Seller geography | [Active sellers and sales by state](sql/05_sellers_and_states.sql) | Counts recovered; conditional sales syntax corrected |
-| SP investigation | [SP product references and raw city labels](sql/06_sp_products_and_cities.sql) | City alias corrected; product and city-list queries reconstructed |
-| Geographic quality | [Seller geographic consistency check](sql/07_seller_geographic_check.sql) | CTE and summary corrected/reconstructed; no data corrections |
+| Database setup | [Create database and nine tables](sql/01_database_setup.sql) | Existing setup; CSV import separate; do not rerun on an existing database |
+| Monthly exploration | [Monthly order volume](01_monthly_order_volume.sql) | Historical output in the archive; not rerun in this verification |
+| Period comparison | [Item sales and orders](sql/02_sales_and_orders.sql) | [Verified 15 October 2026](VERIFIED_RESULTS_2026_10_15.md#2-period-comparison) |
+| Categories | [Counts and category sales](sql/03_categories.sql) | [Counts, appearances and disappearance verified](VERIFIED_RESULTS_2026_10_15.md#3-appearing-and-disappearing-categories); full translated sales table not rerun |
+| Buyers and references | [Buyers and product references](sql/04_buyers_and_products.sql) | [Counts verified](VERIFIED_RESULTS_2026_10_15.md#2-period-comparison); detailed product-sales table not rerun |
+| Sellers and states | [Sellers and sales by state](sql/05_sellers_and_states.sql) | [Totals and both state tables verified](VERIFIED_RESULTS_2026_10_15.md#4-sellers-and-item-sales-by-state) |
+| SP investigation | [SP products and city labels](sql/06_sp_products_and_cities.sql) | [City-label count rerun: 151 / 228, provisional](VERIFIED_RESULTS_2026_10_15.md#5-sp-city-labels--provisional); SP product counts and city lists still pending |
+| Geographic quality | [Seller consistency check](sql/07_seller_geographic_check.sql) | Historical 3,095-row output recovered; classification not rerun in this sequence |
+| Verification session | [All queries executed on 15 October](sql/08_verified_queries_2026_10_15.sql) | [Results and scope of verification](VERIFIED_RESULTS_2026_10_15.md) |
 
-- [Detailed analysis log](ANALYSIS_LOG.md): the investigation sequence, findings, and unresolved questions.
-- [Download recovered queries, outputs, and provenance](requetes-et-resultats-olist.zip): includes monthly counts, category sales, seller/state tables, and the original 3,095-row geographic output. The recovery note identifies each source and every reconstruction.
+- [Analysis log](ANALYSIS_LOG.md): investigation sequence, findings, and unresolved questions.
+- [Historical recovery archive](requetes-et-resultats-olist.zip): prior queries, outputs, and recovery provenance. It is a historical snapshot and is superseded by the dated verification results where indicated.
 
-The two existing scripts retain their original paths to preserve previously shared links. Their prefixes do not define a repository-wide execution sequence. The archive's comparison summary is transcribed from a prior recap; the detailed monthly, category, state, and geographic outputs were recovered separately. Fresh execution exports still need to be saved and reconciled.
+The two original scripts retain their existing paths to preserve shared links. Their prefixes do not define a repository-wide execution sequence. The archive remains unchanged; new checks are recorded in dated files rather than overwriting historical results.
 
 ## Scope and Metric Definitions
 
@@ -54,7 +55,7 @@ The comparison uses purchase timestamps in `[2017-01-01, 2017-09-01)` and `[2018
 - **Unique buyers:** distinct `customers.customer_unique_id` values linked to those orders.
 - **Sold product references:** distinct `product_id` values in order items, not units or categories.
 - **Active sellers:** distinct sellers with at least one order item in the period. An increase in active sellers does not measure recruitment.
-- **Seller geography:** the recorded location of the seller, not the buyer or delivery destination. SP refers to the state of São Paulo.
+- **Seller geography:** the recorded location of the seller, not the buyer or delivery destination. SP refers to the state of SÃ£o Paulo.
 
 No order-status filter is applied. Cancelled or undelivered orders may be included, and orders without items can contribute to order and buyer counts without contributing item sales. The monthly script counts order rows with non-null purchase timestamps; months without matching rows are not displayed.
 
@@ -72,11 +73,13 @@ The check covered all **3,095 sellers**, rather than only sellers active in the 
 
 The rule compares each seller's state with the most frequent state associated with its ZIP prefix in `geolocation`. It is an internal consistency check, not independent address verification. The **35 mismatches and 7 cases without a reference remain unresolved; no geographic corrections have been applied**. Their impact on geographic sales allocations has not yet been measured.
 
+The latest SP city query returned **151 labels in 2017 and 228 in 2018**. These are provisional raw labels, not validated municipality counts. The older 258 figure is historical; its difference from 228 has not been explained. Cleaning is ongoing.
+
 My next steps are to:
 
-1. Rerun the linked scripts in SQL Server, compare them with the recovered historical outputs, and save fresh result exports.
+1. Rerun the remaining monthly, detailed category/product, SP, and geographic queries and save their results.
 2. Resolve geographic anomalies and recalculate affected measures.
-3. Verify the SP product/city comparisons; the R$ 6,164.76 category subtotal has now been reconciled with the recovered detailed category rows.
+3. Complete SP product/city comparisons; the R$ 6,164.76 appearing-category subtotal and disappearing category were confirmed in the verification session.
 4. Compare monthly sales and orders to investigate how growth varies within the eight-month windows.
 5. Develop business recommendations once the findings are supported by these checks.
 
