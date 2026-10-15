@@ -27,17 +27,27 @@ The period totals, category counts and category appearance/disappearance checks,
 
 ## SQL Queries and Repository Guide
 
-The main scripts below follow the separate queries used in the analysis and rerun in SSMS. Order counts and item sales remain two separate queries; item sales per recorded order are calculated by dividing their outputs. The repository does not replace this workflow with a newly combined `WITH` query.
+The period-comparison file contains the three separate queries supplied by the project author: order count, item sales, and item sales per recorded order. Their logic is preserved as supplied, without introducing a combined `WITH` query. Other scripts will be reviewed step by step as the project progresses.
 
 | Step | Queries used | Results |
 | --- | --- | --- |
 | Database setup | [Create database and nine tables](sql/01_database_setup.sql) | Existing setup; import CSVs separately; do not rerun on an existing database |
 | Monthly exploration | [Monthly order volume](01_monthly_order_volume.sql) | Historical output in the recovery archive |
-| Period comparison | [Separate order-count and item-sales queries](sql/02_sales_and_orders.sql) | [Verified totals and per-order calculation](VERIFIED_RESULTS_2026_10_15.md#2-period-comparison) |
+| Period comparison | [Three queries: orders, item sales, and value per order](sql/02_sales_and_orders.sql) | [Verified totals and per-order calculation](VERIFIED_RESULTS_2026_10_15.md#2-period-comparison) |
 | Category counts | [Distinct categories by year](sql/03_categories.sql) | [70 and 72; category checks documented separately](VERIFIED_RESULTS_2026_10_15.md#3-appearing-and-disappearing-categories) |
 | Buyers and references | [Separate buyer and product-reference counts](sql/04_buyers_and_products.sql) | [Verified counts](VERIFIED_RESULTS_2026_10_15.md#2-period-comparison) |
 | Sellers and states | [Seller counts, state comparison and state sales](sql/05_sellers_and_states.sql) | [Verified totals and state tables](VERIFIED_RESULTS_2026_10_15.md#4-sellers-and-item-sales-by-state) |
 | SP city labels | [Distinct recorded city labels](sql/06_sp_products_and_cities.sql) | [151 / 228, provisional while cleaning continues](VERIFIED_RESULTS_2026_10_15.md#5-sp-city-labels--provisional) |
+
+### Episode 2: The Three Queries
+
+Open [02_sales_and_orders.sql](sql/02_sales_and_orders.sql) to see the three queries in order:
+
+1. `COUNT(DISTINCT order_id)` directly from `orders` counts recorded orders.
+2. An `INNER JOIN` from `orders` to `order_items` and `SUM(I.price)` calculates item sales.
+3. A `LEFT JOIN` retains orders without item rows, while `COUNT(DISTINCT O.order_id)` prevents multi-item orders from being counted more than once. `ROUND(SUM(I.price) / COUNT(DISTINCT O.order_id), 2)` calculates item sales per recorded order, rounded to two decimal places.
+
+All three queries use purchase timestamps for January–August in 2017 and 2018, with no order-status filter. The third query is the author's supplied calculation of the same per-order ratio; its specific SQL output has not been newly supplied in this update. The dated verification record retains the earlier SSMS checks and the ratio calculated from their confirmed totals.
 
 ### Guided Checks and Work to Revisit
 

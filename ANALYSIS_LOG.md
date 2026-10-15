@@ -106,4 +106,8 @@ The original 3,095-row geographic output has now been recovered and preserved in
 
 ## Query presentation correction
 
-The main README now links to the separate, rerun queries rather than presenting reconstructed extensions as the original workflow. The sales/order CTE proposed for Episode 2 Part 2 was not used for the original results and was not published. That episode will show the separate order-count and item-sales queries and explain their division. Category CTEs and the geographic ranking method remain guided checks to revisit, with their execution/provenance distinguished from independent mastery. Earlier drafts remain in Git history and the historical archive.
+The main README now links to the separate, rerun queries rather than presenting reconstructed extensions as the original workflow. The sales/order CTE proposed for Episode 2 Part 2 was not used for the original results and was not published. The author subsequently supplied three separate original queries: distinct order count, item sales through an INNER JOIN, and item sales per order through a LEFT JOIN with COUNT(DISTINCT) and ROUND. Those three queries now form the Episode 2 script, with their supplied logic preserved. Category CTEs and the geographic ranking method remain guided checks to revisit, with their execution/provenance distinguished from independent mastery. Earlier drafts remain in Git history and the historical archive.
+
+## Author-supplied Episode 2 queries
+
+[Three separate queries](sql/02_sales_and_orders.sql) replace the previous presentation of the period-comparison script. The third query calculates the per-order ratio directly using a LEFT JOIN and ROUND; it is not a CTE or a calculation using hard-coded totals. No new database run was performed for this source update. Other query files remain unchanged and will be reviewed as the project advances.
