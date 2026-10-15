@@ -26,6 +26,18 @@ The analysis began with an overall comparison of sales performance, buyers, prod
 
 Further investigations may include product categories, sellers, customers, geographic patterns, delivery performance, and customer satisfaction, depending on the findings.
 
+### Monthly Order Volume Exploration
+
+Before selecting the comparison periods, I used SQL Server to calculate monthly order volumes based on purchase timestamps.
+
+The query groups orders by year and month, allowing me to examine the distribution of recorded orders across the dataset.
+
+This exploration highlighted limited records in 2016 and a sharp reduction in recorded orders after August 2018. These observations informed the decision to compare January–August 2017 with January–August 2018.
+
+**SQL script:** [Monthly Order Volume](01_monthly_order_volume.sql)
+
+The query excludes records with missing purchase timestamps and does not filter by order status. Months without matching records do not appear in the query results.
+
 ### Metric Definitions
 
 - **Item sales (CA in the analysis):** `SUM(order_items.price)` in Brazilian reais (R$), excluding freight. This measures the value of items sold, not Olist's accounting revenue, profit, or total payments.
