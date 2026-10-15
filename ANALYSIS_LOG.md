@@ -1,0 +1,83 @@
+# Analysis Log
+
+[Back to the project overview](README.md)
+
+I use this log to record the questions I explored, the results obtained, and the checks still needed. The SQL archive is incomplete; the sections below distinguish recorded findings from figures that still need reconciliation.
+
+## Investigation Sequence and Findings
+
+### 1. Establish comparable periods
+
+The initial exploration checked the available years and months. A January–October comparison was tried first, with an early growth estimate of about 67–68%. That window was superseded after monthly order counts showed uneven coverage: 329 recorded orders in 2016, 6,512 in August 2018, 16 in September 2018, and 4 in October 2018. The retained comparison covers January–August in both years, including all of August. The earlier ten-month estimate is not the final growth result. Low recorded counts alone do not establish a real business decline.
+
+The complete monthly order-count series was also revisited later to document this decision and prepare a chart; documentation order should not be confused with the order of the original investigation.
+
+### 2. Calculate item sales and compare order volumes
+
+The analysis examined the relationship between orders and their items, including the fact that one order can contain multiple item rows. Item prices were summed by order and then by period. Item sales rose by R$ 4,272,905.48 (+137.3%), while recorded orders increased from 22,968 to 53,991 (+135.1%). This comparison establishes growth relative to 2017, not performance against an unspecified average or target.
+
+### 3. Investigate product categories and references
+
+The next question was whether a broader assortment accompanied the increase in sales and orders. The analysis listed and counted sold categories, calculated sales by category for each period, and joined the category translation table to display English labels.
+
+There were 70 distinct non-null categories in 2017 and 72 in 2018. This is a net difference, not proof that exactly two categories appeared. A year/category table contains repeated category names across years, and a null-category sales group can produce an additional row.
+
+My working notes record R$ 6,164.76 for 2018 sales from categories absent from the 2017 comparison period, equivalent to approximately 0.14% of the overall sales increase. I still need to reconcile this subtotal with the query and its output before using it as a confirmed finding.
+
+The investigation then moved to individual product references and their sales by year. Distinct sold references increased from 9,859 to 20,495. I still need to archive the detailed product-level query and its output before drawing conclusions about individual products.
+
+### 4. Compare buyers and active sellers
+
+Unique buyers increased from 22,320 to 52,743, using `customer_unique_id`. Active sellers increased from 1,227 to 2,383. These are period activity counts: the difference does not measure newly recruited sellers or distinguish entry, reactivation, and inactivity.
+
+### 5. Compare seller states and measure their sales
+
+The analysis counted represented seller states, listed active sellers by state and year, and built a side-by-side comparison using conditional aggregation. MA, PA, and PI appeared in 2018 with one active seller each, while AM had one in 2017 and none in 2018.
+
+Item sales were then calculated by seller state for both periods. The three appearing states contributed:
+
+| Seller state | Jan–Aug 2017 item sales (R$) | Jan–Aug 2018 item sales (R$) |
+| --- | ---: | ---: |
+| MA | 0.00 | 36,408.95 |
+| PA | 0.00 | 238.00 |
+| PI | 0.00 | 2,522.00 |
+| **Total** | **0.00** | **39,168.95** |
+
+This is approximately 0.92% of the overall sales increase, or 0.53% of total 2018 item sales. Their contribution was therefore already investigated and was small relative to overall growth. This concerns seller locations, not customer-market expansion.
+
+### 6. Identify SP's weight and investigate it further
+
+| SP indicator | Jan–Aug 2017 | Jan–Aug 2018 |
+| --- | ---: | ---: |
+| Active sellers | 723 | 1,417 |
+| Item sales (R$) | 2,016,153.52 | 4,798,484.69 |
+| Share of overall item sales | 64.77% | 64.97% |
+
+SP accounted for approximately 65.12% of the overall sales increase. **SP here is the state of São Paulo, not just the city of São Paulo.** These are provisional geographic allocations based on the recorded seller states; their sensitivity to unresolved geographic inconsistencies has not been measured.
+
+The next hypotheses concerned assortment expansion within SP and a larger seller network. I explored distinct product references sold by SP sellers. My notes describe a doubling, but I still need the exact query and output to verify this figure. Neither a product-attractiveness explanation nor a distribution strategy has been established.
+
+### 7. Compare seller cities within SP and identify data-quality issues
+
+Before continuing the SP product comparison, the investigation counted distinct recorded city names for active SP sellers and compared names present in only one period. The initial raw counts were 151 in 2017 and 258 in 2018. These are unstandardized labels, not validated counts of municipalities or proof of geographic expansion.
+
+The lists exposed spelling variants, abbreviations, encoding problems, and possible city/state inconsistencies. This prompted work on city-name standardization and postal-prefix checks. Later counts of 147 and 209, and a reference to 55 appearing cities, occur during that quality-work stage and cannot be treated as equivalent to the original raw counts without recovering the exact query definitions. I have not yet verified the sales contribution of those 55 city labels. The small contribution demonstrated above concerns MA, PA, and PI, not those city labels.
+
+City-cleaning previews using `CASE` were explored. A transformed query result alone does not prove that source rows were updated. The investigation remains ongoing, and final business recommendations have not been developed.
+
+## Seller Geographic Consistency Check
+
+After the overall period comparison and the comparison of active seller states, a geographic consistency check was performed on the full sellers table, rather than only sellers active in either comparison period.
+
+The check compares each seller's recorded state with a reference state derived from the seller's ZIP code prefix in `geolocation`. The reference is the most frequent state for that prefix, using state code order to break frequency ties. This is a consistency rule, not an independently verified address reference.
+
+| Geographic status | Sellers |
+| --- | ---: |
+| CONSISTENT | 3,053 |
+| INCONSISTENT | 35 |
+| NOT_FOUND | 7 |
+| **Total** | **3,095** |
+
+`CONSISTENT` means the recorded seller state matches the derived reference state. `INCONSISTENT` means the states differ. `NOT_FOUND` means no non-null reference state was available through the ZIP-prefix lookup; it does not establish that the seller's address is invalid.
+
+I obtained these counts in SQL Server. I still need to archive the query and result export; the documentation update does not represent a new database run. The 35 mismatches and 7 cases without a reference remain unresolved: **no geographic corrections have been applied**. A mismatch alone does not identify which source is wrong. The impact on the previously reported seller-state comparison has not yet been assessed.
