@@ -103,3 +103,7 @@ The original 3,095-row geographic output has now been recovered and preserved in
 ## Verification update — 15 October 2026
 
 [Executed queries](sql/08_verified_queries_2026_10_15.sql) · [Result transcriptions](VERIFIED_RESULTS_2026_10_15.md). Only the checks listed in that record are confirmed as rerun. Historical geographic output is preserved, and geographic anomalies remain unresolved.
+
+## Query presentation correction
+
+The main README now links to the separate, rerun queries rather than presenting reconstructed extensions as the original workflow. The sales/order CTE proposed for Episode 2 Part 2 was not used for the original results and was not published. That episode will show the separate order-count and item-sales queries and explain their division. Category CTEs and the geographic ranking method remain guided checks to revisit, with their execution/provenance distinguished from independent mastery. Earlier drafts remain in Git history and the historical archive.
