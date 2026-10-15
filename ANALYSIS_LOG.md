@@ -2,11 +2,13 @@
 
 [Back to the project overview](README.md)
 
-I use this log to record the questions I explored, the results obtained, and the checks still needed. The SQL archive is incomplete; the sections below distinguish recorded findings from figures that still need reconciliation.
+I use this log to record the questions I explored, the results obtained, and the checks still needed. Recovered, corrected, and reconstructed queries are now linked from the README. Historical outputs are preserved in the recovery archive. The prepared scripts still require a fresh run in SQL Server; some SP product/city findings remain unresolved.
 
 ## Investigation Sequence and Findings
 
 ### 1. Establish comparable periods
+
+[Monthly order-volume query](01_monthly_order_volume.sql)
 
 The initial exploration checked the available years and months. A January–October comparison was tried first, with an early growth estimate of about 67–68%. That window was superseded after monthly order counts showed uneven coverage: 329 recorded orders in 2016, 6,512 in August 2018, 16 in September 2018, and 4 in October 2018. The retained comparison covers January–August in both years, including all of August. The earlier ten-month estimate is not the final growth result. Low recorded counts alone do not establish a real business decline.
 
@@ -14,23 +16,31 @@ The complete monthly order-count series was also revisited later to document thi
 
 ### 2. Calculate item sales and compare order volumes
 
+[Sales and orders queries](sql/02_sales_and_orders.sql)
+
 The analysis examined the relationship between orders and their items, including the fact that one order can contain multiple item rows. Item prices were summed by order and then by period. Item sales rose by R$ 4,272,905.48 (+137.3%), while recorded orders increased from 22,968 to 53,991 (+135.1%). This comparison establishes growth relative to 2017, not performance against an unspecified average or target.
 
 ### 3. Investigate product categories and references
+
+[Category queries](sql/03_categories.sql)
 
 The next question was whether a broader assortment accompanied the increase in sales and orders. The analysis listed and counted sold categories, calculated sales by category for each period, and joined the category translation table to display English labels.
 
 There were 70 distinct non-null categories in 2017 and 72 in 2018. This is a net difference, not proof that exactly two categories appeared. A year/category table contains repeated category names across years, and a null-category sales group can produce an additional row.
 
-My working notes record R$ 6,164.76 for 2018 sales from categories absent from the 2017 comparison period, equivalent to approximately 0.14% of the overall sales increase. I still need to reconcile this subtotal with the query and its output before using it as a confirmed finding.
+The recovered category output reconciles to R$ 6,164.76 for categories present in 2018 and absent in 2017: `portateis_cozinha_e_preparadores_de_alimentos` (R$ 3,968.53), `fraldas_higiene` (R$ 1,356.69), and `flores` (R$ 839.54). This is approximately 0.14% of the overall sales increase. One category, `seguros_e_servicos`, disappears, explaining the net increase from 70 to 72. The sum of all category rows, including NULL-category rows, matches the overall sales total in each year. This reconciliation uses historical rows, not a new database run. The untranslated R$ 3,968.53 category must be retained when joining the translation table.
 
 The investigation then moved to individual product references and their sales by year. Distinct sold references increased from 9,859 to 20,495. I still need to archive the detailed product-level query and its output before drawing conclusions about individual products.
 
 ### 4. Compare buyers and active sellers
 
+[Buyer and product queries](sql/04_buyers_and_products.sql)
+
 Unique buyers increased from 22,320 to 52,743, using `customer_unique_id`. Active sellers increased from 1,227 to 2,383. These are period activity counts: the difference does not measure newly recruited sellers or distinguish entry, reactivation, and inactivity.
 
 ### 5. Compare seller states and measure their sales
+
+[Seller and state queries](sql/05_sellers_and_states.sql)
 
 The analysis counted represented seller states, listed active sellers by state and year, and built a side-by-side comparison using conditional aggregation. MA, PA, and PI appeared in 2018 with one active seller each, while AM had one in 2017 and none in 2018.
 
@@ -47,6 +57,8 @@ This is approximately 0.92% of the overall sales increase, or 0.53% of total 201
 
 ### 6. Identify SP's weight and investigate it further
 
+[SP product and city queries](sql/06_sp_products_and_cities.sql)
+
 | SP indicator | Jan–Aug 2017 | Jan–Aug 2018 |
 | --- | ---: | ---: |
 | Active sellers | 723 | 1,417 |
@@ -59,6 +71,8 @@ The next hypotheses concerned assortment expansion within SP and a larger seller
 
 ### 7. Compare seller cities within SP and identify data-quality issues
 
+[SP product and city queries](sql/06_sp_products_and_cities.sql)
+
 Before continuing the SP product comparison, the investigation counted distinct recorded city names for active SP sellers and compared names present in only one period. The initial raw counts were 151 in 2017 and 258 in 2018. These are unstandardized labels, not validated counts of municipalities or proof of geographic expansion.
 
 The lists exposed spelling variants, abbreviations, encoding problems, and possible city/state inconsistencies. This prompted work on city-name standardization and postal-prefix checks. Later counts of 147 and 209, and a reference to 55 appearing cities, occur during that quality-work stage and cannot be treated as equivalent to the original raw counts without recovering the exact query definitions. I have not yet verified the sales contribution of those 55 city labels. The small contribution demonstrated above concerns MA, PA, and PI, not those city labels.
@@ -66,6 +80,8 @@ The lists exposed spelling variants, abbreviations, encoding problems, and possi
 City-cleaning previews using `CASE` were explored. A transformed query result alone does not prove that source rows were updated. The investigation remains ongoing, and final business recommendations have not been developed.
 
 ## Seller Geographic Consistency Check
+
+[Geographic consistency query](sql/07_seller_geographic_check.sql)
 
 After the overall period comparison and the comparison of active seller states, a geographic consistency check was performed on the full sellers table, rather than only sellers active in either comparison period.
 
@@ -80,4 +96,6 @@ The check compares each seller's recorded state with a reference state derived f
 
 `CONSISTENT` means the recorded seller state matches the derived reference state. `INCONSISTENT` means the states differ. `NOT_FOUND` means no non-null reference state was available through the ZIP-prefix lookup; it does not establish that the seller's address is invalid.
 
-I obtained these counts in SQL Server. I still need to archive the query and result export; the documentation update does not represent a new database run. The 35 mismatches and 7 cases without a reference remain unresolved: **no geographic corrections have been applied**. A mismatch alone does not identify which source is wrong. The impact on the previously reported seller-state comparison has not yet been assessed.
+The original 3,095-row geographic output has now been recovered and preserved in the archive, with 3,095 distinct seller IDs. Its original labels are COHERENT (3,053), INCOHERENT (35), and NON TROUVE (7), matching the English summary. The linked query was corrected/reconstructed and still needs a fresh SQL Server run. The 35 mismatches and 7 cases without a reference remain unresolved: **no geographic corrections have been applied**. A mismatch alone does not identify which source is wrong. The impact on the previously reported seller-state comparison has not yet been assessed.
+
+[Download the recovered outputs and provenance](requetes-et-resultats-olist.zip).

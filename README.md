@@ -23,17 +23,27 @@ The state-level analysis found that:
 - Sellers recorded in SP accounted for about **65% of item sales in each period** and **65.12% of the overall sales increase**.
 - MA, PA, and PI appeared among active seller states in 2018 and contributed **R$ 39,168.95**, about **0.92% of the overall increase**. AM was present in 2017 and absent in 2018, giving a net increase of two states.
 
-These results were obtained during the analysis. **The repository does not yet contain all supporting queries and result exports.** Completing that archive is the next priority. Geographic allocations remain provisional while seller-location anomalies are investigated.
+These results were obtained during the analysis. Supporting queries have now been recovered, corrected, or reconstructed from the working record and linked below. **The prepared scripts have not yet been rerun in SQL Server.** Recovered historical outputs are preserved in the downloadable archive; they are not exports from a new database run. Geographic allocations remain provisional while seller-location anomalies are investigated.
 
-## Repository Guide
+## SQL Queries and Repository Guide
 
-| File | Purpose |
-| --- | --- |
-| [Database setup](sql/01_database_setup.sql) | Creates the database and nine tables; CSV import is a separate step |
-| [Monthly order volume](01_monthly_order_volume.sql) | Counts orders by purchase year and month |
-| [Analysis log](ANALYSIS_LOG.md) | Records the investigation sequence, detailed findings, and checks still open |
+Click a query name to open its SQL file. Each script header distinguishes recovered code from corrected or reconstructed code. The analysis scripts use read-only queries; the database setup file creates the database and tables and should not be rerun on an existing database.
 
-The two existing SQL scripts retain their original paths so previously shared links continue to work. Their numeric prefixes do not define a repository-wide execution sequence. Comparison, category, seller-state, and geographic-check scripts and their exports are still to be archived; links will be added when those files are available.
+| Step | SQL file | Recovery status |
+| --- | --- | --- |
+| Database setup | [Create the database and nine tables](sql/01_database_setup.sql) | Existing setup script; CSV import is separate |
+| Monthly exploration | [Monthly order volume](01_monthly_order_volume.sql) | Existing script, also recovered from the working record |
+| Period comparison | [Item sales and orders](sql/02_sales_and_orders.sql) | Order query recovered; sales query reconstructed |
+| Product categories | [Category counts, sales, and appearing categories](sql/03_categories.sql) | 2017 count recovered; comparative queries reconstructed |
+| Buyers and references | [Unique buyers and product references](sql/04_buyers_and_products.sql) | Buyer syntax corrected; product queries reconstructed |
+| Seller geography | [Active sellers and sales by state](sql/05_sellers_and_states.sql) | Counts recovered; conditional sales syntax corrected |
+| SP investigation | [SP product references and raw city labels](sql/06_sp_products_and_cities.sql) | City alias corrected; product and city-list queries reconstructed |
+| Geographic quality | [Seller geographic consistency check](sql/07_seller_geographic_check.sql) | CTE and summary corrected/reconstructed; no data corrections |
+
+- [Detailed analysis log](ANALYSIS_LOG.md): the investigation sequence, findings, and unresolved questions.
+- [Download recovered queries, outputs, and provenance](requetes-et-resultats-olist.zip): includes monthly counts, category sales, seller/state tables, and the original 3,095-row geographic output. The recovery note identifies each source and every reconstruction.
+
+The two existing scripts retain their original paths to preserve previously shared links. Their prefixes do not define a repository-wide execution sequence. The archive's comparison summary is transcribed from a prior recap; the detailed monthly, category, state, and geographic outputs were recovered separately. Fresh execution exports still need to be saved and reconciled.
 
 ## Scope and Metric Definitions
 
@@ -64,9 +74,9 @@ The rule compares each seller's state with the most frequent state associated wi
 
 My next steps are to:
 
-1. Recover or reconstruct the analysis queries, rerun them in SQL Server, reconcile the totals, and save the result exports.
+1. Rerun the linked scripts in SQL Server, compare them with the recovered historical outputs, and save fresh result exports.
 2. Resolve geographic anomalies and recalculate affected measures.
-3. Verify the category subtotal and SP product/city comparisons documented in the analysis log.
+3. Verify the SP product/city comparisons; the R$ 6,164.76 category subtotal has now been reconciled with the recovered detailed category rows.
 4. Compare monthly sales and orders to investigate how growth varies within the eight-month windows.
 5. Develop business recommendations once the findings are supported by these checks.
 
