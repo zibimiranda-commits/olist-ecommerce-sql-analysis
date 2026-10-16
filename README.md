@@ -36,6 +36,7 @@ The period-comparison file contains the three separate queries supplied by the p
 | Period comparison | [Three queries: orders, item sales, and value per order](sql/02_sales_and_orders.sql) | [Verified totals and per-order calculation](VERIFIED_RESULTS_2026_10_15.md#2-period-comparison) |
 | Category counts | [Distinct categories by year](sql/03_categories.sql) | [70 and 72; category checks documented separately](VERIFIED_RESULTS_2026_10_15.md#3-appearing-and-disappearing-categories) |
 | Buyers and references | [Separate buyer and product-reference counts](sql/04_buyers_and_products.sql) | [Verified counts](VERIFIED_RESULTS_2026_10_15.md#2-period-comparison) |
+| Buyer growth and repeat purchasing (Chapter 1, Episode 3) | [Three queries: order frequency, 2017/2018 overlap, and pre-2018 buyer history](sql/09_buyer_repeat_purchasing.sql) | Single-order buyers: 97.37% / 97.81%; matched-window overlap: 341; prior recorded buyers: 687 of 52,743 (1.30%) |
 | Sellers and states | [Seller counts, state comparison and state sales](sql/05_sellers_and_states.sql) | [Verified totals and state tables](VERIFIED_RESULTS_2026_10_15.md#4-sellers-and-item-sales-by-state) |
 | SP city labels | [Distinct recorded city labels](sql/06_sp_products_and_cities.sql) | [151 / 228, provisional while cleaning continues](VERIFIED_RESULTS_2026_10_15.md#5-sp-city-labels--provisional) |
 
@@ -48,6 +49,14 @@ Open [02_sales_and_orders.sql](sql/02_sales_and_orders.sql) to see the three que
 3. A `LEFT JOIN` retains orders without item rows, while `COUNT(DISTINCT O.order_id)` prevents multi-item orders from being counted more than once. `ROUND(SUM(I.price) / COUNT(DISTINCT O.order_id), 2)` calculates item sales per recorded order, rounded to two decimal places.
 
 All three queries use purchase timestamps for January–August in 2017 and 2018, with no order-status filter. The third query is the author's supplied calculation of the same per-order ratio; its specific SQL output has not been newly supplied in this update. The dated verification record retains the earlier SSMS checks and the ratio calculated from their confirmed totals.
+
+### Chapter 1 | Episode 3: Buyer Growth vs. Repeat Purchasing
+
+This follow-up extends the [initial buyer counts](sql/04_buyers_and_products.sql). The [three dedicated queries](sql/09_buyer_repeat_purchasing.sql) examine order frequency within each January-August window, buyers observed in both windows, and the broader recorded history before 2018.
+
+Active buyers increased from **22,320 to 52,743 (+136.3%)**. In 2017, **21,733 / 537 / 50** buyers placed **1 / 2 / 3+** distinct orders within January-August; in 2018, the counts were **51,586 / 1,085 / 72**. Single-order buyers represented **97.37%** and **97.81%**, respectively. **341** buyers appeared in both January-August windows. Expanding the earlier-history search to all available orders before 2018 identifies **687** of the **52,743** January-August 2018 buyers (**1.30%**).
+
+These are results supplied as validated by the analyst, not newly rerun for this repository update. All three queries use purchase timestamps, identify buyers by `customer_unique_id`, and apply no order-status filter. Frequency covers each selected window only. The 1.30% describes the share of 2018 active buyers with earlier recorded orders; it is **not a standard retention rate**. No order recorded before 2018 does **not** establish that someone is a new customer. Limited dataset history and these descriptive comparisons do not establish causes of growth or measured customer loyalty.
 
 ### Guided Checks and Work to Revisit
 
@@ -102,7 +111,7 @@ My next steps are to:
 
 The database contains nine tables: `customers`, `orders`, `order_items`, `order_payments`, `order_reviews`, `products`, `sellers`, `geolocation`, and `product_category_name_translation`.
 
-Tools: Microsoft SQL Server, SQL Server Management Studio (SSMS), SQL, and GitHub. The main analysis uses SELECT, date filters, distinct counts, SUM, GROUP BY, joins and CASE comparisons. CTEs and ranking appear in guided checks that will be revisited separately.
+Tools: Microsoft SQL Server, SQL Server Management Studio (SSMS), SQL, and GitHub. The main analysis uses SELECT, date filters, distinct counts, SUM, GROUP BY, joins and CASE comparisons. CTEs also support the Episode 3 buyer follow-up; CTEs and ranking appear in guided checks that will be revisited separately.
 
 ## Data Source and License
 
