@@ -32,15 +32,15 @@ GO
     GROUP BY C.customer_unique_id, YEAR(O.order_purchase_timestamp)
 )
 SELECT order_year,
-       CASE WHEN order_count = 1 THEN '1'
-            WHEN order_count = 2 THEN '2'
-            ELSE '3+' END AS order_frequency,
+       CASE WHEN order_count = 1 THEN '1 order'
+            WHEN order_count = 2 THEN '2 orders'
+            ELSE '3+ orders' END AS order_frequency,
        COUNT(*) AS buyers
 FROM buyer_orders
 GROUP BY order_year,
-         CASE WHEN order_count = 1 THEN '1'
-              WHEN order_count = 2 THEN '2'
-              ELSE '3+' END
+         CASE WHEN order_count = 1 THEN '1 order'
+              WHEN order_count = 2 THEN '2 orders'
+              ELSE '3+ orders' END
 ORDER BY order_year, order_frequency;
 
 -- 2. Business question: How many buyers appear in BOTH January-August windows?
