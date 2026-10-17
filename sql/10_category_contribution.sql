@@ -3,8 +3,9 @@
 -- Windows: January-August 2017 vs January-August 2018 (purchase timestamps).
 -- Item sales = SUM(order_items.price), freight excluded, NO order-status filter.
 -- This is not Olist's official revenue.
--- Results below were supplied as validated by the analyst; query 2 (combined
--- contribution) is to be rerun in SSMS and checked against the control total.
+-- Results shown in the Episode 4 images were derived from the validated
+-- per-category totals (query 1, 2017 and 2018); query 2 itself is to be rerun
+-- in SSMS and checked against the control total.
 USE olist;
 GO
 
@@ -32,7 +33,7 @@ ORDER BY order_year, category_pt;
 -- Contribution = sales 2018 - sales 2017. It mixes category size and growth
 -- speed; it does not establish causes.
 -- Control: the sum of all increases must equal 4,272,905.48.
--- Expected top three (from the category tables): health_beauty,
+-- Expected top three (from the category tables): beleza_saude,
 -- relogios_presentes, esporte_lazer.
 ;WITH category_sales AS (
     SELECT P.product_category_name AS category_pt,
@@ -51,7 +52,7 @@ SELECT TOP 10
        sales_2018,
        sales_2018 - sales_2017 AS increase,
        ROUND(100.0 * (sales_2018 - sales_2017)
-             / (SELECT SUM(sales_2018 - sales_2017) FROM category_sales), 2) AS pct_of_total_increase
+             / (SELECT SUM(sales_2018 - sales_2017) FROM category_sales), 2) AS pct_of_increase
 FROM category_sales
 ORDER BY increase DESC;
 
