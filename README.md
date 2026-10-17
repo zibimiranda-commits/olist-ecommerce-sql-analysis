@@ -37,6 +37,7 @@ The period-comparison file contains the three separate queries supplied by the p
 | Category counts | [Distinct categories by year](sql/03_categories.sql) | [70 and 72; category checks documented separately](VERIFIED_RESULTS_2026_10_15.md#3-appearing-and-disappearing-categories) |
 | Buyers and references | [Separate buyer and product-reference counts](sql/04_buyers_and_products.sql) | [Verified counts](VERIFIED_RESULTS_2026_10_15.md#2-period-comparison) |
 | Buyer growth and repeat purchasing (Chapter 1, Episode 3) | [Three queries: order frequency, 2017/2018 overlap, and pre-2018 buyer history](sql/09_buyer_repeat_purchasing.sql) | Single-order buyers: 97.37% / 97.81%; matched-window overlap: 341; prior recorded buyers: 687 of 52,743 (1.30%) |
+| Category contribution (Chapter 1, Episode 4) | [Category sales, contribution to the increase, and appearing categories](sql/10_category_contribution.sql) | Top 10 categories: 67.5% of the increase; 59 of 73 categories grew; categories absent in 2017: 0.14% ([details](VERIFIED_RESULTS_2026_10_15.md#3-appearing-and-disappearing-categories)) |
 | Sellers and states | [Seller counts, state comparison and state sales](sql/05_sellers_and_states.sql) | [Verified totals and state tables](VERIFIED_RESULTS_2026_10_15.md#4-sellers-and-item-sales-by-state) |
 | SP city labels | [Distinct recorded city labels](sql/06_sp_products_and_cities.sql) | [151 / 228, provisional while cleaning continues](VERIFIED_RESULTS_2026_10_15.md#5-sp-city-labels--provisional) |
 
@@ -57,6 +58,14 @@ This follow-up extends the [initial buyer counts](sql/04_buyers_and_products.sql
 Active buyers increased from **22,320 to 52,743 (+136.3%)**. In 2017, **21,733 / 537 / 50** buyers placed **1 / 2 / 3+** distinct orders within January-August; in 2018, the counts were **51,586 / 1,085 / 72**. Single-order buyers represented **97.37%** and **97.81%**, respectively. **341** buyers appeared in both January-August windows. Expanding the earlier-history search to all available orders before 2018 identifies **687** of the **52,743** January-August 2018 buyers (**1.30%**).
 
 These are results supplied as validated by the analyst, not newly rerun for this repository update. All three queries use purchase timestamps, identify buyers by `customer_unique_id`, and apply no order-status filter. Frequency covers each selected window only. The 1.30% describes the share of 2018 active buyers with earlier recorded orders; it is **not a standard retention rate**. No order recorded before 2018 does **not** establish that someone is a new customer. Limited dataset history and these descriptive comparisons do not establish causes of growth or measured customer loyalty.
+
+### Chapter 1 | Episode 4: Which Categories Contributed Most?
+
+This follow-up extends the [category counts](sql/03_categories.sql). The [dedicated script](sql/10_category_contribution.sql) compares item sales by category in January–August 2017 and 2018 (with the English translation table), ranks categories by their contribution to the increase, and checks categories present in one window only.
+
+Categories sold for the first time in the 2018 window (no sale recorded in January–August 2017) account for only about **0.14%** of the increase. The **top 10 categories contributed 67.5%** of it, and **59 of 73** categories sold more in 2018. Growth was therefore broad and came mostly from existing categories. **Health & beauty** ranked first by contribution, and **Watches & gifts** moved from 6th to 2nd by sales.
+
+Contribution = item sales 2018 − item sales 2017. It combines category size and growth speed, and it does not establish causes. Item sales exclude freight, apply no order-status filter, and are not Olist's official revenue. Results are supplied as validated by the analyst, not newly rerun for this repository update.
 
 ### Guided Checks and Work to Revisit
 
