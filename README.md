@@ -38,6 +38,7 @@ The period-comparison file contains the three separate queries supplied by the p
 | Buyers and references | [Separate buyer and product-reference counts](sql/04_buyers_and_products.sql) | [Verified counts](VERIFIED_RESULTS_2026_10_15.md#2-period-comparison) |
 | Buyer growth and repeat purchasing (Chapter 1, Episode 3) | [Three queries: order frequency, 2017/2018 overlap, and pre-2018 buyer history](sql/09_buyer_repeat_purchasing.sql) | Single-order buyers: 97.37% / 97.81%; matched-window overlap: 341; prior recorded buyers: 687 of 52,743 (1.30%) |
 | Category contribution (Chapter 1, Episode 4) | [Category sales, contribution to the increase, and appearing categories](sql/10_category_contribution.sql) | Top 10 categories: 67.5% of the increase; 59 of 73 categories grew; categories absent in 2017: 0.14% ([details](VERIFIED_RESULTS_2026_10_15.md#3-appearing-and-disappearing-categories)) |
+| Product turnover (Chapter 1, Episode 5) | [Product sales by window, product groups, and earlier-sale test](sql/11_product_turnover.sql) | 2,436 products sold in both windows; 15,500 of 20,495 products sold in 2018 (75.6%) had no recorded sale before 2018, generating R$ 4,490,754.07 (60.8% of 2018 item sales) |
 | Sellers and states | [Seller counts, state comparison and state sales](sql/05_sellers_and_states.sql) | [Verified totals and state tables](VERIFIED_RESULTS_2026_10_15.md#4-sellers-and-item-sales-by-state) |
 | SP city labels | [Distinct recorded city labels](sql/06_sp_products_and_cities.sql) | [151 / 228, provisional while cleaning continues](VERIFIED_RESULTS_2026_10_15.md#5-sp-city-labels--provisional) |
 
@@ -66,6 +67,14 @@ This follow-up extends the [category counts](sql/03_categories.sql). The [dedica
 Categories sold for the first time in the 2018 window (no sale recorded in January–August 2017) account for only about **0.14%** of the increase. The **top 10 categories contributed 67.5%** of it, and **59 of 73** categories sold more in 2018. Growth was therefore broad and came mostly from existing categories. **Health & beauty** ranked first by contribution, and **Watches & gifts** moved from 6th to 2nd by sales.
 
 Contribution = item sales 2018 − item sales 2017. It combines category size and growth speed, and it does not establish causes. Item sales exclude freight, apply no order-status filter, and are not Olist's official revenue. Results are supplied as validated by the analyst, not newly rerun for this repository update.
+
+### Chapter 1 | Episode 5: Were the Products the Same?
+
+This follow-up extends the [category contribution analysis](sql/10_category_contribution.sql) at product level. The [dedicated script](sql/11_product_turnover.sql) compares item sales per product in January-August 2017 and 2018, groups products by whether they sold in one or both windows, and tests whether the products sold in 2018 had any recorded sale before 1 January 2018.
+
+Products sold increased from **9,859 to 20,495 (+107.9%)**. Across both windows, **27,918** products sold at least once: **2,436** in both windows, **18,059** in January-August 2018 only, and **7,423** in January-August 2017 only. Of the 20,495 products sold in 2018, **15,500 (75.6%)** had no recorded sale before 2018 and generated **R$ 4,490,754.07 (60.8%)** of 2018 item sales; **4,995** had sold before 2018 (R$ 2,895,151.73).
+
+"No recorded sale" in a window or before 2018 does **not** establish that a product is new or discontinued: the dataset's history is limited and product identifiers may change. These are descriptive comparisons and do not explain why the product mix changed. Item sales exclude freight, apply no order-status filter, and are not Olist's official revenue. Results are supplied as validated by the analyst, not newly rerun for this repository update.
 
 ### Guided Checks and Work to Revisit
 
