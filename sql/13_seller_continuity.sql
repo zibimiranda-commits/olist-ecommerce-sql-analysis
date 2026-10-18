@@ -3,6 +3,8 @@
 -- Windows: January-August 2017 vs January-August 2018 (purchase timestamps).
 -- Item sales = SUM(order_items.price), freight excluded, NO order-status filter.
 -- This is not Olist's official revenue. A seller is "active" with at least one item sold in the window.
+-- Activity is tested with item sales > 0 in the window. This matches "at least one order item": the groups give
+-- 686 + 541 = 1,227 and 686 + 1,697 = 2,383 sellers, the same counts as the item-row based counts in 12_seller_analysis.sql.
 -- "No sale before 2018" = no order item before 1 Jan 2018 in this dataset; it does not establish that a seller is new.
 -- The sales bands (1,000 / 5,000 / 20,000) are analyst-chosen thresholds, not an Olist classification.
 -- Queries 1-3 results were executed in SSMS by the analyst on 18 Oct 2026 and tie to the validated totals.
