@@ -39,6 +39,7 @@ The period-comparison file contains the three separate queries supplied by the p
 | Buyer growth and repeat purchasing (Chapter 1, Episode 3) | [Three queries: order frequency, 2017/2018 overlap, and pre-2018 buyer history](sql/09_buyer_repeat_purchasing.sql) | Single-order buyers: 97.37% / 97.81%; matched-window overlap: 341; prior recorded buyers: 687 of 52,743 (1.30%) |
 | Category contribution (Chapter 1, Episode 4) | [Category sales, contribution to the increase, and appearing categories](sql/10_category_contribution.sql) | Top 10 categories: 67.5% of the increase; 59 of 73 categories grew; categories absent in 2017: 0.14% ([details](VERIFIED_RESULTS_2026_10_15.md#3-appearing-and-disappearing-categories)) |
 | Product turnover (Chapter 1, Episode 5) | [Product sales by window, product groups, and earlier-sale test](sql/11_product_turnover.sql) | 2,436 products sold in both windows; 15,500 of 20,495 products sold in 2018 (75.6%) had no recorded sale before 2018, generating R$ 4,490,754.07 (60.8% of 2018 item sales) |
+| Seller analysis (Chapter 1, Episode 6) | [Sales by seller, average vs median, and sales bands](sql/12_seller_analysis.sql) | Active sellers rose from 1,227 to 2,383; median seller R$ 607.10 → R$ 782.24 (average R$ 2,537.08 → R$ 3,099.41); 63 sellers (2.6%) at R$ 20,000+ accounted for 37.2% of 2018 item sales |
 | Sellers and states | [Seller counts, state comparison and state sales](sql/05_sellers_and_states.sql) | [Verified totals and state tables](VERIFIED_RESULTS_2026_10_15.md#4-sellers-and-item-sales-by-state) |
 | SP city labels | [Distinct recorded city labels](sql/06_sp_products_and_cities.sql) | [151 / 228, provisional while cleaning continues](VERIFIED_RESULTS_2026_10_15.md#5-sp-city-labels--provisional) |
 
@@ -75,6 +76,14 @@ This follow-up extends the [category contribution analysis](sql/10_category_cont
 Distinct product IDs sold increased from **9,859 to 20,495 (+107.9%)**; counts refer to distinct `product_id` values, not units sold. Across both windows, **27,918** products sold at least once: **2,436** in both windows, **18,059** in January-August 2018 only, and **7,423** in January-August 2017 only. Of the 20,495 products sold in 2018, **15,500 (75.6%)** had no recorded sale before 2018 and generated **R$ 4,490,754.07 (60.8%)** of 2018 item sales; **4,995** had sold before 2018 (R$ 2,895,151.73).
 
 "No recorded sale" in a window or before 2018 does **not** establish that a product is new or discontinued: the dataset's history is limited and product identifiers may change. These are descriptive comparisons and do not explain why the product mix changed. Item sales exclude freight, apply no order-status filter, and are not Olist's official revenue. Results are supplied as validated by the analyst, not newly rerun for this repository update.
+
+### Chapter 1 | Episode 6: Who Were the Sellers?
+
+The [dedicated script](sql/12_seller_analysis.sql) builds one row per seller and year for January-August 2017 and 2018, then summarises it: average versus median item sales per seller, and the number of sellers and item sales in four sales bands.
+
+Active sellers (at least one item sold in the window) rose from **1,227 to 2,383 (+94.2%)**. Item sales per seller averaged **R$ 2,537.08** then **R$ 3,099.41**, but the median seller sold **R$ 607.10** then **R$ 782.24**, about a quarter of the average. In 2018, **55.5%** of sellers sold under R$ 1,000 (6.1% of item sales), while the **63 sellers (2.6%)** at R$ 20,000 or more accounted for **37.2%** of item sales (25 sellers and 29.8% in 2017).
+
+The bands (R$ 1,000 / 5,000 / 20,000) are thresholds chosen for this analysis, not an Olist classification. These are descriptive comparisons and do not explain why sellers joined or grew. Item sales exclude freight, apply no order-status filter, and are not Olist's official revenue. Results were executed in SSMS by the analyst and tie to the validated totals.
 
 ### Guided Checks and Work to Revisit
 
