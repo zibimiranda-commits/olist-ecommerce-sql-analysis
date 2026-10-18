@@ -111,3 +111,24 @@ The main README now links to the separate, rerun queries rather than presenting 
 ## Author-supplied Episode 2 queries
 
 [Three separate queries](sql/02_sales_and_orders.sql) replace the previous presentation of the period-comparison script. The third query calculates the per-order ratio directly using a LEFT JOIN and ROUND; it is not a CTE or a calculation using hard-coded totals. No new database run was performed for this source update. Other query files remain unchanged and will be reviewed as the project advances.
+
+
+## Series update - 18 October 2026 (Episodes 4 to 6)
+
+All comparisons use January-August 2017 vs January-August 2018. Item sales = SUM(price), freight excluded, no order-status filter; not Olist's official revenue. These are descriptive comparisons and do not establish causes.
+
+### Episode 4 - Category contribution
+
+[Script](sql/10_category_contribution.sql). Item sales rose by R$ 4,272,905.48. Three categories with sales in 2018 and none in 2017 accounted for R$ 6,164.76 (0.14% of the increase). The top 10 categories accounted for 67.5% of the increase; 59 of 73 categories recorded higher sales in 2018. Contribution mixes category size and growth speed.
+
+### Episode 5 - Products
+
+[Script](sql/11_product_turnover.sql). Distinct product IDs sold rose from 9,859 to 20,495 (counts of distinct product_id, not units). 27,918 product IDs sold in at least one window: 2,436 in both, 18,059 in 2018 only, 7,423 in 2017 only. Of the 20,495 products sold in 2018, 15,500 (75.6%) had no recorded sale before 2018 and generated R$ 4,490,754.07 (60.8% of 2018 item sales). "No recorded sale" does not establish that a product is new.
+
+### Episode 6 - Sellers
+
+[Script](sql/12_seller_analysis.sql) - [visuals](images/episode-6/). Active sellers (at least one item sold in the window) rose from 1,227 to 2,383 (+94.2%). Average item sales per seller: R$ 2,537.08 then R$ 3,099.41; median: R$ 607.10 then R$ 782.24. Total item sales rose 137.3%; the rise in sellers (x1.94) weighed more than the rise in average sales per seller (x1.22). Sales bands (analyst-chosen thresholds): sellers under R$ 1,000 were 55.5% of 2018 sellers and 6.1% of item sales; the 63 sellers (2.6%) at R$ 20,000 or more accounted for 37.2% of item sales (25 sellers and 29.8% in 2017).
+
+Seller state (registered) by sales band was also checked: about 57-62% of sellers in the first three bands are in SP in both windows; in the top band SP held 20 of 25 sellers in 2017 and 40 of 63 in 2018. This cross-check is kept for the geography episodes and relies on the registered seller state only. Seller city data still needs cleaning, so no city-level conclusion is drawn.
+
+Open questions: whether 2018 sellers were the same as in 2017 (686 sellers active in both windows in the January-August data; earlier history before 2018 still to be tested), and whether products with no earlier recorded sale came from sellers with no earlier recorded sale.

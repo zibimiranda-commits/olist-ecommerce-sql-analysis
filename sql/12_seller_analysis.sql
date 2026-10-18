@@ -26,7 +26,7 @@ GROUP BY
     I.seller_id
 ORDER BY order_year, item_sales DESC;
 
--- 2. Business question: what did the average and the median seller sell?
+-- 2. Business question: what were average and median item sales per seller?
 -- Result: 2017 -> 1,227 sellers | 3,113,000.32 | avg 2,537.08 | median 607.10
 --         2018 -> 2,383 sellers | 7,385,905.80 | avg 3,099.41 | median 782.24
 ;WITH seller_sales AS (
