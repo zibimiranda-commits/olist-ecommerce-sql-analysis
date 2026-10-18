@@ -40,6 +40,7 @@ The period-comparison file contains the three separate queries supplied by the p
 | Category contribution (Chapter 1, Episode 4) | [Category sales, contribution to the increase, and appearing categories](sql/10_category_contribution.sql) | Top 10 categories: 67.5% of the increase; 59 of 73 categories grew; categories absent in 2017: 0.14% ([details](VERIFIED_RESULTS_2026_10_15.md#3-appearing-and-disappearing-categories)) |
 | Product turnover (Chapter 1, Episode 5) | [Product sales by window, product groups, and earlier-sale test](sql/11_product_turnover.sql) | 2,436 products sold in both windows; 15,500 of 20,495 products sold in 2018 (75.6%) had no recorded sale before 2018, generating R$ 4,490,754.07 (60.8% of 2018 item sales) |
 | Seller analysis (Chapter 1, Episode 6) | [Sales by seller, average vs median, and sales bands](sql/12_seller_analysis.sql) | Active sellers rose from 1,227 to 2,383; median item sales per seller R$ 607.10 → R$ 782.24 (average R$ 2,537.08 → R$ 3,099.41); 63 sellers (2.6%) at R$ 20,000+ accounted for 37.2% of 2018 item sales |
+| Seller continuity (Chapter 1, Episode 7) | [Seller groups, earlier history, and continuation by sales band](sql/13_seller_continuity.sql) | 686 of 2,383 sellers active in 2018 (28.8%) were also active in January-August 2017; 1,284 (53.9%) had no recorded sale before 2018 and made 30.0% of 2018 item sales; 92.0% of 2017's top-band sellers (23 of 25) were active again in 2018 vs 43.1% of the under-R$ 1,000 band |
 | Sellers and states | [Seller counts, state comparison and state sales](sql/05_sellers_and_states.sql) | [Verified totals and state tables](VERIFIED_RESULTS_2026_10_15.md#4-sellers-and-item-sales-by-state) |
 | SP city labels | [Distinct recorded city labels](sql/06_sp_products_and_cities.sql) | [151 / 228, provisional while cleaning continues](VERIFIED_RESULTS_2026_10_15.md#5-sp-city-labels--provisional) |
 
@@ -86,6 +87,14 @@ Active sellers (at least one item sold in the window) rose from **1,227 to 2,383
 Visuals: [overview](images/episode-6/episode-6-cover.png) · [query 1: sales by seller](images/episode-6/episode-6-query-1.png) · [query 2: average vs median](images/episode-6/episode-6-query-2.png) · [query 3: sales bands](images/episode-6/episode-6-query-3.png)
 
 The bands (R$ 1,000 / 5,000 / 20,000) are thresholds chosen for this analysis, not an Olist classification. These are descriptive comparisons and do not explain why sellers joined or grew. Item sales exclude freight, apply no order-status filter, and are not Olist's official revenue. Results were executed in SSMS by the analyst and tie to the validated totals.
+
+### Chapter 1 | Episode 7: Were the Sellers the Same?
+
+The [dedicated script](sql/13_seller_continuity.sql) compares which sellers were active in January-August 2017 and January-August 2018, tests whether the sellers active in 2018 had any recorded sale before 1 January 2018, and measures how many 2017 sellers were active again in 2018 by 2017 sales band. Visuals: [overview](images/episode-7/episode-7-cover.png) · [query 1: seller groups](images/episode-7/episode-7-query-1.png) · [query 2: earlier history](images/episode-7/episode-7-query-2.png) · [query 3: active again by band](images/episode-7/episode-7-query-3.png)
+
+Of the **2,383** sellers active in 2018, **686 (28.8%)** were also active in the 2017 window and **1,697** were active in 2018 only; **541** of the 1,227 sellers active in 2017 had no sale in the 2018 window. The 686 accounted for 82.8% of 2017 item sales and 49.7% of 2018 item sales (R$ 3,672,980.53 of R$ 7,385,905.80). **1,284 (53.9%)** of the 2018 sellers had no recorded sale before 2018 and made **R$ 2,214,796.80 (30.0%)** of 2018 item sales; 1,099 had sold before 2018. Of the 2017 sellers, **43.1%** (323 of 749) of the under-R$ 1,000 band, **70.8%** (228 of 322), **85.5%** (112 of 131) and **92.0%** (23 of 25) of the R$ 20,000-or-more band were active again in 2018.
+
+"No recorded sale before 2018" means no order item before 1 January 2018 in this dataset; it does **not** establish that a seller is new. The sales bands are thresholds chosen for this analysis, and the top band held only 25 sellers in 2017. These are descriptive comparisons and do not explain why sellers stayed or stopped selling. Item sales exclude freight, apply no order-status filter, and are not Olist's official revenue. Queries 1 to 3 were executed in SSMS by the analyst and tie to the validated totals.
 
 ### Guided Checks and Work to Revisit
 
