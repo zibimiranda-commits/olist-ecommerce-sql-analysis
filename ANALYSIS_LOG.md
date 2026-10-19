@@ -127,7 +127,7 @@ All comparisons use January-August 2017 vs January-August 2018. Item sales = SUM
 
 ### Episode 6 - Sellers
 
-[Script](sql/12_seller_analysis.sql) - [visuals](images/episode-6/). Active sellers (at least one item sold in the window) rose from 1,227 to 2,383 (+94.2%). Average item sales per seller: R$ 2,537.08 then R$ 3,099.41; median: R$ 607.10 then R$ 782.24. Total item sales rose 137.3%; the rise in sellers (x1.94) weighed more than the rise in average sales per seller (x1.22). Sales bands (analyst-chosen thresholds): sellers under R$ 1,000 were 55.5% of 2018 sellers and 6.1% of item sales; the 63 sellers (2.6%) at R$ 20,000 or more accounted for 37.2% of item sales (25 sellers and 29.8% in 2017).
+[Script](sql/12_seller_analysis.sql) - [visuals](images/episode-6/). Active sellers (at least one recorded order item in the window) rose from 1,227 to 2,383 (+94.2%). Average item sales per seller: R$ 2,537.08 then R$ 3,099.41; median: R$ 607.10 then R$ 782.24. Total item sales rose 137.3%; the rise in sellers (x1.94) weighed more than the rise in average sales per seller (x1.22). Sales bands (analyst-chosen thresholds): sellers under R$ 1,000 were 55.5% of 2018 sellers and 6.1% of item sales; the 63 sellers (2.6%) at R$ 20,000 or more accounted for 37.2% of item sales (25 sellers and 29.8% in 2017).
 
 Seller state (registered) by sales band was also checked: about 57-62% of sellers in the first three bands are in SP in both windows; in the top band SP held 20 of 25 sellers in 2017 and 40 of 63 in 2018. This cross-check is kept for the geography episodes and relies on the registered seller state only. Seller city data still needs cleaning, so no city-level conclusion is drawn.
 

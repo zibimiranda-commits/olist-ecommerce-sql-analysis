@@ -83,7 +83,7 @@ Distinct product IDs sold increased from **9,859 to 20,495 (+107.9%)**; counts r
 
 The [dedicated script](sql/12_seller_analysis.sql) builds one row per seller and year for January-August 2017 and 2018, then summarises it: average versus median item sales per seller, and the number of sellers and item sales in four sales bands.
 
-Active sellers (at least one item sold in the window) rose from **1,227 to 2,383 (+94.2%)**. Item sales per seller averaged **R$ 2,537.08** then **R$ 3,099.41**, but median item sales per seller were **R$ 607.10** then **R$ 782.24**, about a quarter of the average. In 2018, **55.5%** of sellers sold under R$ 1,000 (6.1% of item sales), while the **63 sellers (2.6%)** at R$ 20,000 or more accounted for **37.2%** of item sales (25 sellers and 29.8% in 2017).
+Active sellers (at least one recorded order item in the window) rose from **1,227 to 2,383 (+94.2%)**. Item sales per seller averaged **R$ 2,537.08** then **R$ 3,099.41**, but median item sales per seller were **R$ 607.10** then **R$ 782.24**, about a quarter of the average. In 2018, **55.5%** of sellers sold under R$ 1,000 (6.1% of item sales), while the **63 sellers (2.6%)** at R$ 20,000 or more accounted for **37.2%** of item sales (25 sellers and 29.8% in 2017).
 
 Visuals: [overview](images/episode-6/episode-6-cover.png) · [query 1: sales by seller](images/episode-6/episode-6-query-1.png) · [query 2: average vs median](images/episode-6/episode-6-query-2.png) · [query 3: sales bands](images/episode-6/episode-6-query-3.png)
 

@@ -2,7 +2,7 @@
 -- Follow-up to 12_seller_analysis.sql; SQL Server, read-only.
 -- Windows: January-August 2017 vs January-August 2018 (purchase timestamps).
 -- Item sales = SUM(order_items.price), freight excluded, NO order-status filter.
--- This is not Olist's official revenue. A seller is "active" with at least one item sold in the window.
+-- This is not Olist's official revenue. An active seller has at least one recorded order item in the window.
 -- Activity is tested with item sales > 0 in the window. This matches "at least one order item": the groups give
 -- 686 + 541 = 1,227 and 686 + 1,697 = 2,383 sellers, the same counts as the item-row based counts in 12_seller_analysis.sql.
 -- "No sale before 2018" = no order item before 1 Jan 2018 in this dataset; it does not establish that a seller is new.

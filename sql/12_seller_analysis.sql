@@ -2,7 +2,7 @@
 -- Follow-up to 05_sellers_and_states.sql; SQL Server, read-only.
 -- Windows: January-August 2017 vs January-August 2018 (purchase timestamps).
 -- Item sales = SUM(order_items.price), freight excluded, NO order-status filter.
--- This is not Olist's official revenue. A seller is "active" with at least one item sold in the window.
+-- This is not Olist's official revenue. An active seller has at least one recorded order item in the window.
 -- The sales bands (1,000 / 5,000 / 20,000) are analyst-chosen thresholds, not an Olist classification.
 -- Results below were executed in SSMS by the analyst on 18 Oct 2026; each ties to the validated totals.
 USE olist;
