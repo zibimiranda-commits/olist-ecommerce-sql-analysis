@@ -41,6 +41,7 @@ The period-comparison file contains the three separate queries supplied by the p
 | Product turnover (Chapter 1, Episode 5) | [Product sales by window, product groups, and earlier-sale test](sql/11_product_turnover.sql) | 2,436 products sold in both windows; 15,500 of 20,495 products sold in 2018 (75.6%) had no recorded sale before 2018, generating R$ 4,490,754.07 (60.8% of 2018 item sales) |
 | Seller analysis (Chapter 1, Episode 6) | [Sales by seller, average vs median, and sales bands](sql/12_seller_analysis.sql) | Active sellers rose from 1,227 to 2,383; median item sales per seller R$ 607.10 → R$ 782.24 (average R$ 2,537.08 → R$ 3,099.41); 63 sellers (2.6%) at R$ 20,000+ accounted for 37.2% of 2018 item sales |
 | Seller continuity (Chapter 1, Episode 7) | [Seller groups, earlier history, and continuation by sales band](sql/13_seller_continuity.sql) | 686 of 2,383 sellers active in 2018 (28.8%) were also active in January-August 2017; 1,284 (53.9%) had no recorded sale before 2018 and made 30.0% of 2018 item sales; 92.0% of 2017's top-band sellers (23 of 25) were active again in 2018 vs 43.1% of the under-R$ 1,000 band |
+| Seller geography check (Chapter 1, Episode 8) | [Sellers by region, ZIP-code consistency check, and city labels](sql/14_seller_geography_check.sql) | Southeast + South: 95.8% / 95.0% of active sellers; 42 of 3,095 sellers flagged by the ZIP-code check (1.4%), 0.73% / 0.57% of item sales; 611 distinct city labels, with São Paulo written 7 ways (705 sellers) and 9 other cities hiding behind "sao paulo" or "sp" |
 | Sellers and states | [Seller counts, state comparison and state sales](sql/05_sellers_and_states.sql) | [Verified totals and state tables](VERIFIED_RESULTS_2026_10_15.md#4-sellers-and-item-sales-by-state) |
 | SP city labels | [Distinct recorded city labels](sql/06_sp_products_and_cities.sql) | [151 / 228, provisional while cleaning continues](VERIFIED_RESULTS_2026_10_15.md#5-sp-city-labels--provisional) |
 
@@ -96,6 +97,16 @@ Of the **2,383** sellers active in 2018, **686 (28.8%)** were also active in the
 
 "No recorded sale before 2018" means no order item before 1 January 2018 in this dataset; it does **not** establish that a seller is new. The sales bands are thresholds chosen for this analysis, and the top band held only 25 sellers in 2017. These are descriptive comparisons and do not explain why sellers stayed or stopped selling. Item sales exclude freight, apply no order-status filter, and are not Olist's official revenue. Queries 1 to 3 were executed in SSMS by the analyst and tie to the validated totals.
 
+### Chapter 1 | Episode 8: Where Were the Sellers?
+
+The [dedicated script](sql/14_seller_geography_check.sql) groups active sellers by registered region, tests each registered state against the state suggested by the seller's ZIP prefix, and inspects the city labels. Visuals: [overview](images/episode-8/episode-8-cover.png) · [query 1: sellers by region](images/episode-8/episode-8-query-1.png) · [query 2: ZIP-code check](images/episode-8/episode-8-query-2.png) · [query 3: city labels](images/episode-8/episode-8-query-3.png)
+
+More than 95% of active sellers were registered in the Southeast (SP, MG, RJ, ES) or the South (PR, SC, RS): **95.8%** of 1,227 sellers in 2017 (909 and 267) and **95.0%** of 2,383 in 2018 (1,752 and 513); all other regions held 51 and 118 sellers. SP alone held 723 of 1,227 sellers (58.9%) and 1,417 of 2,383 (59.5%), about 65% of item sales in both windows.
+
+The ZIP-code check flagged **42 of 3,095 sellers (1.4%)**: 35 INCONSISTENT (33 of them registered in SP) and 7 NOT_FOUND. They made R$ 22,818.61 of 2017 item sales (0.73%) and R$ 42,065.65 of 2018 (0.57%); the three statuses tie to R$ 3,113,000.32 and R$ 7,385,905.80. The states therefore held up to this consistency check. It is an internal rule, not address verification, and no state was corrected.
+
+The sellers table holds **611 distinct city labels**, still 611 after LOWER and TRIM; this does not prove that case is clean, because SQL Server's default comparison ignores case, but it shows that basic normalisation removes nothing. São Paulo is written in **seven ways** (705 sellers: "sao paulo" 694, "sp" 4, "sao paulo - sp" 3, and four labels with one seller each), and **nine other cities** hide behind "sao paulo" or "sp". Reading "sp" as the city of São Paulo is an interpretation. City counts cover all 3,095 sellers and are raw labels, not validated cities. Queries 1 to 3 were executed in SSMS by the analyst.
+
 ### Guided Checks and Work to Revisit
 
 The following files preserve assisted checks and recovery history. They are not a claim that the original analysis used these consolidated methods independently:
@@ -133,7 +144,7 @@ The check covered all **3,095 sellers**, rather than only sellers active in the 
 | INCONSISTENT | 35 |
 | NOT_FOUND | 7 |
 
-The rule compares each seller's state with the most frequent state associated with its ZIP prefix in `geolocation`. It is an internal consistency check, not independent address verification. The **35 mismatches and 7 cases without a reference remain unresolved; no geographic corrections have been applied**. Their impact on geographic sales allocations has not yet been measured.
+The rule compares each seller's state with the most frequent state associated with its ZIP prefix in `geolocation`. It is an internal consistency check, not independent address verification. The **35 mismatches and 7 cases without a reference remain unresolved; no geographic corrections have been applied**. Their impact on sales was measured in Episode 8: 0.73% of 2017 and 0.57% of 2018 item sales.
 
 The latest SP city query returned **151 labels in 2017 and 228 in 2018**. These are provisional raw labels, not validated municipality counts. The older 258 figure is historical; its difference from 228 has not been explained. Cleaning is ongoing.
 
