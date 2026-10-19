@@ -92,11 +92,11 @@ ORDER BY G.geographic_status;
 -- 3. Business question: is a city label a city?
 -- First query: 611 distinct raw labels and 611 after LOWER/LTRIM/RTRIM. SQL Server's default comparison
 -- ignores case and trailing spaces, so this does not prove that case is clean; it shows that basic
--- normalisation removes nothing and the differences are real spellings.
+-- normalisation does not reduce the count.
 -- Second query (18 labels): "sao paulo" (694 sellers) plus six other spellings of the city of Sao Paulo
 -- ("sp" 4, "sao paulo - sp" 3, "sao paulo / sao paulo" 1, "sao paulo sp" 1, "sao paulop" 1, "sp / sp" 1)
--- = 7 spellings and 705 sellers. Reading "sp" as the city of Sao Paulo is an interpretation.
--- Nine other cities hide behind "sao paulo" or "sp" (auriflama/sp, carapicuiba / sao paulo,
+-- = 7 labels and 705 sellers. Reading "sp" as the city of Sao Paulo is an interpretation.
+-- Nine other labels appear to refer to different places and contain "sao paulo" or "sp" (auriflama/sp, carapicuiba / sao paulo,
 -- jacarei / sao paulo, maua/sao paulo, mogi das cruzes / sp, ribeirao preto / sao paulo,
 -- santo andre/sao paulo, sao sebastiao da grama/sp, sbc/sp). "gaspar" (SC) and "vespasiano" (MG)
 -- only contain "sp". A rule such as "any label containing sao paulo becomes Sao Paulo" would merge the nine.
