@@ -2,7 +2,8 @@
 -- Follow-up to 13_seller_continuity.sql; SQL Server, read-only. No data is modified or corrected.
 -- Windows: January-August 2017 vs January-August 2018 (purchase timestamps).
 -- Item sales = SUM(order_items.price), freight excluded, NO order-status filter.
--- This is not Olist's official revenue. A seller is "active" with at least one item sold in the window.
+-- This is not Olist's official revenue. An active seller has at least one recorded order item in the window
+-- (counted here as sales > 0; no seller has only zero-price items, as Episodes 7 and 8 totals tie: 2,924 sellers).
 -- Geography = the seller's REGISTERED state (sellers.seller_state). It says nothing about buyer location.
 -- Regions (analyst grouping): Southeast = SP, MG, RJ, ES; South = PR, SC, RS; everything else = Other regions.
 -- Queries 1-3 results were executed in SSMS by the analyst on 18-19 Oct 2026 and tie to the validated totals.
