@@ -1,12 +1,51 @@
 # Olist E-commerce SQL Analysis
 
-**How did sales performance change between Januaryâ€“August 2017 and Januaryâ€“August 2018, and what factors are associated with that change?**
+**How did sales performance change between January–August 2017 and January–August 2018, and what factors are associated with that change?**
 
-I use SQL Server to investigate this question with the Brazilian Olist e-commerce dataset. My approach is to start with overall performance, test possible explanations, and check data quality before developing business recommendations.
+## About This Project
+
+This is an independent portfolio project built with SQL Server and the public Brazilian Olist e-commerce dataset. I treat it like a business investigation: I start from one question, test possible explanations one at a time, check the quality of the data behind each result, and only then draw conclusions. Every result is descriptive. The analysis shows what changed and what is associated with the change; it does not claim to prove why.
+
+The work is published as a LinkedIn series, one episode at a time. This repository holds the SQL scripts, the verified results and the notes behind each episode, so that every number in a post can be traced back to a query.
+
+## The Data
+
+Olist is a Brazilian marketplace connecting small sellers to buyers. The public dataset covers about 100,000 orders placed between 2016 and 2018 and is organised in nine related tables:
+
+| Table | What it contains | Links to |
+| --- | --- | --- |
+| `orders` | One row per order: purchase date, status, delivery dates | `customers` through `customer_id` |
+| `order_items` | One row per item in an order: product, seller, price, freight | `orders`, `products`, `sellers` |
+| `customers` | One row per customer_id (one per order), with the buyer's unique ID, city, state and ZIP prefix | `orders` |
+| `sellers` | One row per seller, with city, state and ZIP prefix | `order_items` |
+| `products` | Product category and physical attributes | `order_items` |
+| `product_category_name_translation` | Portuguese to English category names | `products` |
+| `order_payments` | Payment type and value per order | `orders` |
+| `order_reviews` | Review scores and comments per order | `orders` |
+| `geolocation` | Latitude, longitude, city and state for each ZIP prefix | `customers`, `sellers` through the ZIP prefix |
+
+The comparison uses the same eight calendar months in both years (January–August), because 2016 holds few records and very few orders appear after August 2018. The full definitions of each measure are in [Scope and Metric Definitions](#scope-and-metric-definitions).
+
+## How the Project Is Organised
+
+| Chapter | Question | Status |
+| --- | --- | --- |
+| **Chapter 1: What changed?** (Episodes 1–10) | How big was the growth, and was it driven by more buyers, more categories, new products or more sellers? Did buyers come back? | Done |
+| **Chapter 2: Where did growth happen?** | Clean the city and state data, measure the weight of São Paulo on the seller and buyer side, see what distinguishes it (basket, categories, freight) and compare delivery times by location, 2017 vs 2018 | In progress (steps 1–3, seller side) |
+| **Chapter 3: Why did buyers not come back?** | Order status, customer reviews and comments, delivery delays and their link to repeat orders | Planned |
+
+Each chapter ends with a conclusion before the next one begins. If a verified result justifies changing this plan, the change is documented in the [analysis log](ANALYSIS_LOG.md).
+
+## How to Read This Repository
+
+- **Start here** for the question, the headline results and the guide to the scripts below.
+- **`sql/`** holds one numbered script per step; the number follows the order of the investigation.
+- **[VERIFIED_RESULTS_2026_10_15.md](VERIFIED_RESULTS_2026_10_15.md)** records the outputs checked after execution in SSMS.
+- **[ANALYSIS_LOG.md](ANALYSIS_LOG.md)** tells the story of the investigation, including the errors and the points still open.
 
 ## Key Results
 
-| Indicator | Janâ€“Aug 2017 | Janâ€“Aug 2018 |
+| Indicator | Jan–Aug 2017 | Jan–Aug 2018 |
 | --- | ---: | ---: |
 | Item sales (R$) | 3,113,000.32 | 7,385,905.80 |
 | Orders | 22,968 | 53,991 |
@@ -153,7 +192,7 @@ The comparison uses purchase timestamps in `[2017-01-01, 2017-09-01)` and `[2018
 - **Unique buyers:** distinct `customers.customer_unique_id` values linked to those orders.
 - **Sold product references:** distinct `product_id` values in order items, not units or categories.
 - **Active sellers:** distinct sellers with at least one order item in the period. An increase in active sellers does not measure recruitment.
-- **Seller geography:** the recorded location of the seller, not the buyer or delivery destination. SP refers to the state of SÃ£o Paulo.
+- **Seller geography:** the recorded location of the seller, not the buyer or delivery destination. SP refers to the state of São Paulo.
 
 No order-status filter is applied. Cancelled or undelivered orders may be included, and orders without items can contribute to order and buyer counts without contributing item sales. Chapter 2 (Step 2) checked this choice: delivered orders are 95.8% (2017) and 97.8% (2018) of orders, and item sales rose 141.1% over delivered orders only versus 137.3% over all statuses. The monthly script counts order rows with non-null purchase timestamps; months without matching rows are not displayed.
 
