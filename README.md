@@ -230,7 +230,7 @@ In Chapter 3, I plan to return to the question that emerged from Chapter 1: why 
 **My main takeaway:** I started by measuring how much the marketplace grew. I finished Chapter 1 wanting to understand what was behind that growth.
 
 
-### Chapter 2 | Steps 1-3: Cleaning the Geography and Sao Paulo (in progress)
+## Chapter 2 | Geography and Data Quality
 
 Scripts: [geography audit](sql/16_chapter2_geography_audit.sql), [seller city mapping table](sql/17_seller_city_map.sql), [checks and seller geography](sql/18_chapter2_checks_and_seller_geography.sql). All results were executed in SSMS by the analyst on 20 October 2026 and tie to the validated totals.
 
