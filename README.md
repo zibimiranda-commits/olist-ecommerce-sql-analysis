@@ -42,6 +42,19 @@ Each chapter ends with a conclusion before the next one begins. If a verified re
 - **`sql/`** holds one numbered script per step; the number follows the order of the investigation.
 - **[VERIFIED_RESULTS_2026_10_15.md](VERIFIED_RESULTS_2026_10_15.md)** records the outputs checked after execution in SSMS.
 - **[ANALYSIS_LOG.md](ANALYSIS_LOG.md)** tells the story of the investigation, including the errors and the points still open.
+- 
+## Scope and Metric Definitions
+
+The comparison uses purchase timestamps in `[2017-01-01, 2017-09-01)` and `[2018-01-01, 2018-09-01)`. Monthly exploration showed limited records in 2016 and very few orders after August 2018, so I selected the same eight calendar months in both years. This avoids treating sparse end-of-dataset records as comparable full months; it does not establish the cause of the low counts.
+
+- **Item sales:** `SUM(order_items.price)` in Brazilian reais, excluding freight. This is not Olist's accounting revenue, profit, or total payments.
+- **Orders:** distinct `order_id` values in the purchase period.
+- **Unique buyers:** distinct `customers.customer_unique_id` values linked to those orders.
+- **Sold product references:** distinct `product_id` values in order items, not units or categories.
+- **Active sellers:** distinct sellers with at least one order item in the period. An increase in active sellers does not measure recruitment.
+- **Seller geography:** the recorded location of the seller, not the buyer or delivery destination. SP refers to the state of São Paulo.
+
+No order-status filter is applied. Cancelled or undelivered orders may be included, and orders without items can contribute to order and buyer counts without contributing item sales. Chapter 2 (Step 2) checked this choice: delivered orders are 95.8% (2017) and 97.8% (2018) of orders, and item sales rose 141.1% over delivered orders only versus 137.3% over all statuses. The monthly script counts order rows with non-null purchase timestamps; months without matching rows are not displayed.
 
 ## Key Results
 
@@ -86,6 +99,8 @@ The period-comparison file contains the three separate queries supplied by the p
 | Robustness checks and seller geography (Chapter 2, Steps 2-3) | [State-vs-ZIP scenario, order-status control, Sao Paulo city vs state, cities by contribution](sql/18_chapter2_checks_and_seller_geography.sql) | SP share of item sales 64.77% / 64.97% (registered state) vs 64.22% / 64.57% (ZIP-based state); delivered orders 95.8% / 97.8% of orders, item sales +141.1% (delivered) vs +137.3% (all statuses); city of Sao Paulo 20.6% / 20.2% of item sales (state of SP about 65%); top 15 cities = 54.1% of the increase |
 | Sellers and states | [Seller counts, state comparison and state sales](sql/05_sellers_and_states.sql) | [Verified totals and state tables](VERIFIED_RESULTS_2026_10_15.md#4-sellers-and-item-sales-by-state) |
 | SP city labels | [Distinct recorded city labels](sql/06_sp_products_and_cities.sql) | [151 / 228, provisional while cleaning continues](VERIFIED_RESULTS_2026_10_15.md#5-sp-city-labels--provisional) |
+
+## Chapter 1 | Understanding Sales Growth
 
 ### Episode 2: The Three Queries
 
@@ -183,18 +198,6 @@ The following files preserve assisted checks and recovery history. They are not 
 
 Existing paths are retained so shared links continue to open. Earlier drafts remain in Git history and the recovery archive. No new combined CTE for sales, orders and per-order value has been published.
 
-## Scope and Metric Definitions
-
-The comparison uses purchase timestamps in `[2017-01-01, 2017-09-01)` and `[2018-01-01, 2018-09-01)`. Monthly exploration showed limited records in 2016 and very few orders after August 2018, so I selected the same eight calendar months in both years. This avoids treating sparse end-of-dataset records as comparable full months; it does not establish the cause of the low counts.
-
-- **Item sales:** `SUM(order_items.price)` in Brazilian reais, excluding freight. This is not Olist's accounting revenue, profit, or total payments.
-- **Orders:** distinct `order_id` values in the purchase period.
-- **Unique buyers:** distinct `customers.customer_unique_id` values linked to those orders.
-- **Sold product references:** distinct `product_id` values in order items, not units or categories.
-- **Active sellers:** distinct sellers with at least one order item in the period. An increase in active sellers does not measure recruitment.
-- **Seller geography:** the recorded location of the seller, not the buyer or delivery destination. SP refers to the state of São Paulo.
-
-No order-status filter is applied. Cancelled or undelivered orders may be included, and orders without items can contribute to order and buyer counts without contributing item sales. Chapter 2 (Step 2) checked this choice: delivered orders are 95.8% (2017) and 97.8% (2018) of orders, and item sales rose 141.1% over delivered orders only versus 137.3% over all statuses. The monthly script counts order rows with non-null purchase timestamps; months without matching rows are not displayed.
 
 ## Data Quality and Current Progress
 
