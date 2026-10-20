@@ -100,7 +100,36 @@ The period-comparison file contains the three separate queries supplied by the p
 | Sellers and states | [Seller counts, state comparison and state sales](sql/05_sellers_and_states.sql) | [Verified totals and state tables](VERIFIED_RESULTS_2026_10_15.md#4-sellers-and-item-sales-by-state) |
 | SP city labels | [Distinct recorded city labels](sql/06_sp_products_and_cities.sql) | [151 / 228, provisional while cleaning continues](VERIFIED_RESULTS_2026_10_15.md#5-sp-city-labels--provisional) |
 
+
 ## Chapter 1 | Understanding Sales Growth
+
+### Episode 1: Why January–August 2017 vs. 2018?
+
+**Business question:** Which periods can be compared fairly to analyse e-commerce growth?
+
+Before calculating sales growth, I explored monthly order volumes across the Olist dataset, from 2016 to 2018.
+
+**SQL approach**
+
+I used `YEAR()` and `MONTH()` to group orders by purchase month, `COUNT(*)` to measure monthly order volume, and `ORDER BY` to display the results chronologically. Orders without a purchase timestamp were excluded.
+
+**What I observed**
+
+The dataset contains only 329 recorded orders between September and December 2016, and very few orders after August 2018 (16 in September 2018).
+
+This limited coverage at the beginning and end of the dataset makes a full-year comparison less appropriate.
+
+**Analytical decision**
+
+I selected January–August 2017 and January–August 2018 to compare the same eight calendar months in both years.
+
+These periods contain 22,968 and 53,991 recorded orders, respectively.
+
+**Business takeaway**
+
+Before measuring growth, we need comparable periods. A low number of recorded orders at the boundaries of a dataset does not necessarily indicate a decline in business activity; it may reflect incomplete data coverage.
+
+**SQL script:** [Monthly order volume](01_monthly_order_volume.sql)
 
 ### Episode 2: The Three Queries
 
@@ -112,7 +141,7 @@ Open [02_sales_and_orders.sql](sql/02_sales_and_orders.sql) to see the three que
 
 All three queries use purchase timestamps for January–August in 2017 and 2018, with no order-status filter. The third query is the author's supplied calculation of the same per-order ratio; its specific SQL output has not been newly supplied in this update. The dated verification record retains the earlier SSMS checks and the ratio calculated from their confirmed totals.
 
-### Chapter 1 | Episode 3: Buyer Growth vs. Repeat Purchasing
+### Episode 3: Buyer Growth vs. Repeat Purchasing
 
 This follow-up extends the [initial buyer counts](sql/04_buyers_and_products.sql). The [three dedicated queries](sql/09_buyer_repeat_purchasing.sql) examine order frequency within each January-August window, buyers observed in both windows, and the broader recorded history before 2018.
 
@@ -120,7 +149,7 @@ Active buyers increased from **22,320 to 52,743 (+136.3%)**. In 2017, **21,733 /
 
 These are results supplied as validated by the analyst, not newly rerun for this repository update. All three queries use purchase timestamps, identify buyers by `customer_unique_id`, and apply no order-status filter. Frequency covers each selected window only. The 1.30% describes the share of 2018 active buyers with earlier recorded orders; it is **not a standard retention rate**. No order recorded before 2018 does **not** establish that someone is a new customer. Limited dataset history and these descriptive comparisons do not establish causes of growth or measured customer loyalty.
 
-### Chapter 1 | Episode 4: Which Categories Contributed Most?
+### Episode 4: Which Categories Contributed Most?
 
 This follow-up extends the [category counts](sql/03_categories.sql). The [dedicated script](sql/10_category_contribution.sql) compares item sales by category in January–August 2017 and 2018 (with the English translation table), ranks categories by their contribution to the increase, and checks categories present in one window only.
 
@@ -128,7 +157,7 @@ Categories sold for the first time in the 2018 window (no sale recorded in Janua
 
 Contribution = item sales 2018 − item sales 2017. It combines category size and growth speed, and it does not establish causes. Item sales exclude freight, apply no order-status filter, and are not Olist's official revenue. Results are supplied as validated by the analyst, not newly rerun for this repository update.
 
-### Chapter 1 | Episode 5: Were the Products the Same?
+### Episode 5: Were the Products the Same?
 
 This follow-up extends the [category contribution analysis](sql/10_category_contribution.sql) at product level. The [dedicated script](sql/11_product_turnover.sql) compares item sales per product in January-August 2017 and 2018, groups products by whether they sold in one or both windows, and tests whether the products sold in 2018 had any recorded sale before 1 January 2018.
 
@@ -136,7 +165,7 @@ Distinct product IDs sold increased from **9,859 to 20,495 (+107.9%)**; counts r
 
 "No recorded sale" in a window or before 2018 does **not** establish that a product is new or discontinued: the dataset's history is limited and product identifiers may change. These are descriptive comparisons and do not explain why the product mix changed. Item sales exclude freight, apply no order-status filter, and are not Olist's official revenue. Results are supplied as validated by the analyst, not newly rerun for this repository update.
 
-### Chapter 1 | Episode 6: Who Were the Sellers?
+### Episode 6: Who Were the Sellers?
 
 The [dedicated script](sql/12_seller_analysis.sql) builds one row per seller and year for January-August 2017 and 2018, then summarises it: average versus median item sales per seller, and the number of sellers and item sales in four sales bands.
 
@@ -146,7 +175,7 @@ Visuals: [overview](images/episode-6/episode-6-cover.png) · [query 1: sales by 
 
 The bands (R$ 1,000 / 5,000 / 20,000) are thresholds chosen for this analysis, not an Olist classification. These are descriptive comparisons and do not explain why sellers joined or grew. Item sales exclude freight, apply no order-status filter, and are not Olist's official revenue. Results were executed in SSMS by the analyst and tie to the validated totals.
 
-### Chapter 1 | Episode 7: Were the Sellers the Same?
+### Episode 7: Were the Sellers the Same?
 
 The [dedicated script](sql/13_seller_continuity.sql) compares which sellers were active in January-August 2017 and January-August 2018, tests whether the sellers active in 2018 had any recorded sale before 1 January 2018, and measures how many 2017 sellers were active again in 2018 by 2017 sales band. Visuals: [overview](images/episode-7/episode-7-cover.png) · [query 1: seller groups](images/episode-7/episode-7-query-1.png) · [query 2: earlier history](images/episode-7/episode-7-query-2.png) · [query 3: active again by band](images/episode-7/episode-7-query-3.png)
 
@@ -154,7 +183,7 @@ Of the **2,383** sellers active in 2018, **686 (28.8%)** were also active in the
 
 "No recorded sale before 2018" means no order item before 1 January 2018 in this dataset; it does **not** establish that a seller is new. The sales bands are thresholds chosen for this analysis, and the top band held only 25 sellers in 2017. These are descriptive comparisons and do not explain why sellers stayed or stopped selling. Item sales exclude freight, apply no order-status filter, and are not Olist's official revenue. Queries 1 to 3 were executed in SSMS by the analyst and tie to the validated totals.
 
-### Chapter 1 | Episode 8: Where Were the Sellers?
+### Episode 8: Where Were the Sellers?
 
 The [dedicated script](sql/14_seller_geography_check.sql) groups active sellers by registered region, tests each registered state against the state suggested by the seller's ZIP prefix, and inspects the city labels. Visuals: [overview](images/episode-8/episode-8-cover.png) · [query 1: sellers by region](images/episode-8/episode-8-query-1.png) · [query 2: ZIP-code check](images/episode-8/episode-8-query-2.png) · [query 3: city labels](images/episode-8/episode-8-query-3.png)
 
@@ -164,13 +193,42 @@ The ZIP-code check flagged **42 of 3,095 sellers (1.4%)**: 35 INCONSISTENT (33 o
 
 The sellers table holds **611 distinct city labels**, still 611 after LOWER and TRIM; this does not prove that case is clean, because SQL Server's default comparison ignores case, but it shows that this basic normalisation does not reduce the count. **Seven labels** are interpreted as São Paulo (705 sellers: "sao paulo" 694, "sp" 4, "sao paulo - sp" 3, and four labels with one seller each), and **nine other labels** containing "sao paulo" or "sp" appear to refer to different places. Reading "sp" as the city of São Paulo is an interpretation. City counts cover all 3,095 sellers and are raw labels, not validated cities. Queries 1 to 3 were executed in SSMS by the analyst.
 
-### Chapter 1 | Episode 9: Did Buyers Come Back?
+### Episode 9: Did Buyers Come Back?
 
 The [dedicated script](sql/15_buyer_repeat_categories.sql) counts buyers (customer_unique_id) with a single order, compares everyday-use categories with the other categories, and follows buyers first recorded in January-March 2017. Visuals: [overview](images/episode-9/episode-9-cover.png), [query 1](images/episode-9/episode-9-query-1.png), [query 2](images/episode-9/episode-9-query-2.png), [query 3](images/episode-9/episode-9-query-3.png).
 
 Of **22,320** buyers in January-August 2017, **21,733 (97.4%)** placed a single order; of **52,743** in 2018, **51,586 (97.8%)**. Within the same category group, buyers with two or more orders were **1.94% (69 of 3,563)** then **1.09% (111 of 10,143)** for everyday-use categories, and **2.54%** then **2.08%** for the other categories. The everyday-use group made **16.1%** of 2017 item sales and **18.7%** of 2018 (R$ 499,901.04 and R$ 1,383,133.74). Following the **5,152** buyers whose first recorded order was in January-March 2017 over the whole dataset, **261 (5.07%)** ordered again, so about 95% still had a single recorded order.
 
 The everyday-use grouping is an analyst choice, not an Olist classification, and "within the same group" does not count a buyer who orders in two different groups. The cohort rate and the window rates cover different buyers and periods: compare orders of magnitude, not decimals. Queries 1 to 3 were executed in SSMS by the analyst.
+
+### Episode 10: Chapter 1 Conclusion — Behind the Numbers
+
+**What did I learn?**
+
+Between January–August 2017 and January–August 2018, item sales increased by 137.3%, unique buyers by 136.3%, and active sellers by 94.2%.
+
+At first, these numbers suggested a marketplace experiencing remarkable growth. But each SQL analysis raised new questions.
+
+The number of buyers increased significantly, yet approximately 97–98% placed only one order within each comparison period. Even among everyday-use product categories, repeat purchasing remained limited.
+
+**My business perspective**
+
+Having managed my own retail store, I know how important returning customers can be. This experience made me question whether strong sales growth necessarily reflects a loyal customer base.
+
+However, the dataset cannot tell me whether buyers purchased elsewhere, whether they were satisfied, or why they did not return. The observation periods and available history also limit what I can conclude about customer retention.
+
+**What Chapter 1 established**
+
+The marketplace recorded substantial growth in item sales, buyers, products, and active sellers. But growth alone does not demonstrate profitability, customer loyalty, or long-term sustainability.
+
+**What comes next?**
+
+In Chapter 2, I will examine the geographic distribution of sales, clean location data, and explore where growth was recorded.
+
+In Chapter 3, I plan to return to the question that emerged from Chapter 1: why did so few buyers place another recorded order? I will investigate reviews, delivery delays, and order statuses for possible clues, without assuming they establish the causes.
+
+**My main takeaway:** I started by measuring how much the marketplace grew. I finished Chapter 1 wanting to understand what was behind that growth.
+
 
 ### Chapter 2 | Steps 1-3: Cleaning the Geography and Sao Paulo (in progress)
 
