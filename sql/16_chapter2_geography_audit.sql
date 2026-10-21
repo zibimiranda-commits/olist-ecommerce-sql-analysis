@@ -144,3 +144,47 @@ WHERE ISNULL(M.status, '') <> 'unresolved'
   AND (Z.ref_city IS NULL OR COALESCE(M.clean_city, S.seller_city) <> Z.ref_city)
 GROUP BY COALESCE(M.clean_city, S.seller_city), S.seller_state, Z.ref_city, Z.ref_state
 ORDER BY sellers DESC, city_clean;
+
+-- 7. Summary of query 3: how many customer city names appear under 2, 3 or 4 states?
+-- Result: 2 states = 142 names | 3 states = 14 | 4 states = 7 (total 163).
+-- Check: 142 x 1 + 14 x 2 + 7 x 3 = 191 = 4,310 - 4,119 (query 1).
+;WITH multi_state AS (
+    SELECT LOWER(LTRIM(RTRIM(customer_city))) AS city_norm,
+           COUNT(DISTINCT customer_state) AS states
+    FROM customers
+    GROUP BY LOWER(LTRIM(RTRIM(customer_city)))
+    HAVING COUNT(DISTINCT customer_state) > 1
+)
+SELECT states,
+       COUNT(*) AS city_names
+FROM multi_state
+GROUP BY states
+ORDER BY states;
+
+-- 8. Summary of query 4: how many city labels are absent from the ZIP reference?
+-- Result: sellers 94 labels / 103 sellers (103 of 3,095 = 3.3%) | customers 60 labels / 76 rows (0.08% of 99,441).
+;WITH ref AS (
+    SELECT DISTINCT geolocation_city, geolocation_state
+    FROM geolocation
+),
+missing_sellers AS (
+    SELECT S.seller_city, S.seller_state, COUNT(*) AS n
+    FROM sellers AS S
+    LEFT JOIN ref ON ref.geolocation_city = S.seller_city
+                 AND ref.geolocation_state = S.seller_state
+    WHERE ref.geolocation_city IS NULL
+    GROUP BY S.seller_city, S.seller_state
+),
+missing_customers AS (
+    SELECT C.customer_city, C.customer_state, COUNT(*) AS n
+    FROM customers AS C
+    LEFT JOIN ref ON ref.geolocation_city = C.customer_city
+                 AND ref.geolocation_state = C.customer_state
+    WHERE ref.geolocation_city IS NULL
+    GROUP BY C.customer_city, C.customer_state
+)
+SELECT 'sellers' AS source, COUNT(*) AS labels_not_found, SUM(n) AS rows_affected
+FROM missing_sellers
+UNION ALL
+SELECT 'customers', COUNT(*), SUM(n)
+FROM missing_customers;
