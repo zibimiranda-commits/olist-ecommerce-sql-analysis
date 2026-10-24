@@ -7,6 +7,9 @@
 USE olist;
 GO
 
+-- Results checked in SSMS on 24 Oct 2026: query 1 ALL STATES = 1,227 | 2,383 sellers, 335 | 490 cities, 3,113,000.32 | 7,385,905.80;
+-- SP = 141 | 195 cities; query 2 SP 2018 = mean 24,468.83, median 2,826.27, top city 31.2% (sao paulo).
+
 -- QUERY 1. Active sellers, active cities and item sales per seller state (both years side by side).
 -- Checks: ALL STATES row = 1,227 | 2,383 sellers and 3,113,000.32 | 7,385,905.80 sales;
 --         SP row = 723 | 1,417 sellers, 2,016,153.52 | 4,798,484.69 sales, 4 | 8 sellers without a usable city.
@@ -124,9 +127,10 @@ GROUP BY SY.yr, ROLLUP (G.seller_state)
 ORDER BY SY.yr, GROUPING(G.seller_state), total_sales DESC;
 GO
 
--- QUERY 4. Concentration inside Sao Paulo state, 2018: how many cities carry 50% and 80% of city-attributed item sales?
+-- QUERY 4 (query 3 of the LinkedIn post). Concentration inside Sao Paulo state, 2018: how many cities carry 50% and 80% of city-attributed item sales?
 -- Cumulative share over cities ranked by sales (ties broken by city name). Only sellers with a usable city.
--- Expected (verified in SSMS during the analysis): 195 cities | 6 cities pass 50% | 25 cities reach 80% | top city 31.2%.
+-- Result (verified in SSMS, 24 Oct 2026): 195 cities | 6 cities pass 50% | 25 cities reach 80% | top city 31.2%.
+-- Ties: 195 = cities_2018 of query 1 (SP); 31.2 = top_city_share_pct of query 2 (SP, 2018).
 ;WITH seller_year AS (
     SELECT OI.seller_id, SUM(OI.price) AS sales
     FROM order_items AS OI
