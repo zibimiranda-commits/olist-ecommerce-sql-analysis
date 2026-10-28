@@ -4,7 +4,7 @@
 -- Item sales = SUM(order_items.price), freight excluded. One row of order_items = one item sold.
 -- Origin of a sale = seller_state compared with the buyer's customer_state (registered states).
 -- Category names: the English translation is matched with LIKE 'name%' because an exact
--- match returned 0 rows (the English names probably carry hidden trailing characters).
+-- match returned 0 rows while LIKE worked; the cause has not been confirmed.
 -- Category queries use DECLARE @cat: run each batch (up to GO) as a whole, changing @cat.
 -- Results below were checked in SSMS on 27-28 Oct 2026.
 USE olist;

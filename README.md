@@ -31,7 +31,7 @@ The comparison uses the same eight calendar months in both years (January–Augu
 | Chapter | Question | Status |
 | --- | --- | --- |
 | **Chapter 1: What changed?** (Episodes 1–10) | How big was the growth, and was it driven by more buyers, more categories, new products or more sellers? Did buyers come back? | Done |
-| **Chapter 2: Where did growth happen?** | Clean the city and state data, measure the weight of São Paulo on the seller and buyer side, see what distinguishes it (basket, categories, freight) and compare delivery times by location, 2017 vs 2018 | In progress (steps 1–3, seller side) |
+| **Chapter 2: Where did growth happen?** | Clean the city and state data, measure the weight of São Paulo on the seller and buyer side, see what distinguishes it (basket, categories, freight) and compare delivery times by location, 2017 vs 2018 | In progress (Episodes 11–15 done; next: freight, delivery times, conclusion) |
 | **Chapter 3: Why did buyers not come back?** | Order status, customer reviews and comments, delivery delays and their link to repeat orders | Planned |
 
 Each chapter ends with a conclusion before the next one begins. If a verified result justifies changing this plan, the change is documented in the [analysis log](ANALYSIS_LOG.md).
@@ -97,6 +97,9 @@ The period-comparison file contains the three separate queries supplied by the p
 | Buyer repeat check (Chapter 1, Episode 9) | [Single-order buyers, everyday-use categories, and a Jan-Mar 2017 follow-up](sql/15_buyer_repeat_categories.sql) | 97.4% / 97.8% of buyers placed a single order; within the same everyday-use group, 1.94% -> 1.09% ordered twice or more (other categories 2.54% -> 2.08%); 5.07% of 5,152 buyers first recorded in Jan-Mar 2017 ordered again |
 | Geography audit (Chapter 2, Step 1) | [City-label audit and ZIP-reference comparison](sql/16_chapter2_geography_audit.sql) and [seller city mapping table](sql/17_seller_city_map.sql) | 611 seller city labels (636 city+state pairs) and 4,119 customer labels (4,310 pairs); of 103 sellers whose label is absent from the ZIP reference, 55 had a text error in the city, 32 a registered state that differs from the ZIP state and 14 an unusable label; mapping table: 56 corrected labels (66 sellers), 15 unresolved (18), 2 kept; seller labels 611 -> 548 |
 | Robustness checks and seller geography (Chapter 2, Steps 2-3) | [State-vs-ZIP scenario, order-status control, Sao Paulo city vs state, cities by contribution](sql/18_chapter2_checks_and_seller_geography.sql) | SP share of item sales 64.77% / 64.97% (registered state) vs 64.22% / 64.57% (ZIP-based state); delivered orders 95.8% / 97.8% of orders, item sales +141.1% (delivered) vs +137.3% (all statuses); city of Sao Paulo 20.6% / 20.2% of item sales (state of SP about 65%); top 15 cities = 54.1% of the increase |
+| Seller-city concentration (Chapter 2, Episode 13) | [Active sellers, cities and sales by seller state; intensity per city; concentration inside SP](sql/19_chapter2_seller_city_concentration.sql) | 1,227 → 2,383 active sellers in 335 → 490 cities; SP: 723 → 1,417 sellers in 141 → 195 cities; in 2018 the largest SP city holds 31.2% of city-attributed SP item sales, 6 cities pass 50% and 25 reach 80% |
+| Buyer geography (Chapter 2, Episode 14) | [Buyers and sales by buyer state; destination of SP sellers' sales; origin of each state's purchases; buyer cities](sql/20_chapter2_buyer_geography.sql) | SP buyers: 44.1% of 2018 buyers (23,284 of 52,743) and 40.3% of item sales; SP buyers took 38.7% (2017) and 43.6% (2018) of SP sellers' item sales, the rest went to other states; 4 (2017) and 9 (2018) buyers ordered from several states |
+| SP sellers and buyers outside SP (Chapter 2, Episode 15) | [Origin of purchases, category rule, seller states, product-ID overlap](sql/21_chapter2_sp_dominance.sql) | Buyers outside SP: 62.1% (2017) and 61.3% (2018) of purchase value came from SP sellers (R$ 2,705,031.81 of 4,410,293.57 in 2018), 8.0% from their own state; four categories pass the rule (above R$ 50,000 outside SP and at least 75% from SP sellers), SP sellers 76.9–87.2% of their sales outside SP; 96.3% of 32,951 sold product IDs had one seller |
 | Sellers and states | [Seller counts, state comparison and state sales](sql/05_sellers_and_states.sql) | [Verified totals and state tables](VERIFIED_RESULTS_2026_10_15.md#4-sellers-and-item-sales-by-state) |
 | SP city labels | [Distinct recorded city labels](sql/06_sp_products_and_cities.sql) | [151 / 228, provisional while cleaning continues](VERIFIED_RESULTS_2026_10_15.md#5-sp-city-labels--provisional) |
 
@@ -232,7 +235,7 @@ In Chapter 3, I plan to return to the question that emerged from Chapter 1: why 
 
 ## Chapter 2 | Geography and Data Quality
 
-Scripts: [geography audit](sql/16_chapter2_geography_audit.sql), [seller city mapping table](sql/17_seller_city_map.sql), [checks and seller geography](sql/18_chapter2_checks_and_seller_geography.sql). All results were executed in SSMS by the analyst on 20 October 2026 and tie to the validated totals.
+Scripts: [geography audit](sql/16_chapter2_geography_audit.sql), [seller city mapping table](sql/17_seller_city_map.sql), [checks and seller geography](sql/18_chapter2_checks_and_seller_geography.sql) (Episodes 11–12), [seller-city concentration](sql/19_chapter2_seller_city_concentration.sql) (Episode 13), [buyer geography](sql/20_chapter2_buyer_geography.sql) (Episode 14), [SP sellers and buyers outside SP](sql/21_chapter2_sp_dominance.sql) (Episode 15). Results were executed in SSMS by the analyst between 20 and 28 October 2026 and tie to the validated totals.
 
 ### Episode 11: What Is in a City Name?
 
@@ -259,7 +262,25 @@ Taking the state from the ZIP prefix instead of the registered state lowers the 
 
 **Step 3, Sao Paulo (seller side).** The city of Sao Paulo accounts for 289 of 1,227 active sellers (23.6%) and 20.6% of item sales in 2017, and 522 of 2,383 (21.9%) and 20.2% in 2018; the other cities of the state of SP account for 35.0% then 37.2% of sellers and 44.1% then 44.4% of item sales. Of the R$ 4,272,905.48 increase, the city contributed 19.85% and the other SP cities 44.69%; the SP total remains 65.12%. The top 15 cities contribute 54.1% of the increase, ten of them in SP. A city can rest on very few sellers (Guariba: one active seller in each window, 2.64% of the increase), so these rankings describe where sales were recorded, not why.
 
-Still to come in Chapter 2: buyer-side geography, medians per city, what distinguishes Sao Paulo (basket, categories, freight) and delivery times crossed with seller and buyer location. No causal explanation is drawn from these results.
+### Episode 13: Wide or Deep? How Sao Paulo Gets Its Weight
+
+**Business question:** Does the weight of SP rest on many cities or on a few? (seller side)
+
+Active sellers grew from 1,227 to 2,383, spread over 335 then 490 cities. SP had 723 then 1,417 active sellers in 141 then 195 cities. In 2018 the largest SP city holds 31.2% of city-attributed SP item sales; 6 cities pass 50% and 25 reach 80%. Sellers without a usable city (4 in 2017, 8 in 2018 in SP) stay in the state totals but are not counted as cities. These figures describe where sales were recorded, not why.
+
+### Episode 14: Where Are the Buyers? Supply vs. Demand
+
+**Business question:** Where do buyers live, and do the sales of SP sellers stay in SP?
+
+SP buyers are 44.1% of 2018 buyers (23,284 of 52,743) and 40.3% of item sales (R$ 2,975,612.23), against about 65% of item sales made by SP sellers. In 2018, SP buyers took 43.6% of SP sellers' item sales (38.7% in 2017); the rest went to other states. A buyer is counted once per state; 4 (2017) and 9 (2018) buyers ordered from several states. Buyers in SP are concentrated in the city of Sao Paulo (35.7% then 38.2% of SP buyers); 6 cities pass 50% in 2018, and the threshold holds when 17 extra counts are allowed for.
+
+### Episode 15: Why Do Buyers Outside São Paulo Buy from SP Sellers?
+
+**Business question:** What does the sales data tell, and not tell, about why buyers outside SP buy from SP sellers?
+
+Among buyers outside SP, SP sellers made 62.1% (2017) and 61.3% (2018) of purchase value (R$ 2,705,031.81 of 4,410,293.57 in 2018); sellers from the buyer's own state made 6.1% then 8.0%. A rule fixed before the analysis (above R$ 50,000 outside SP and at least 75% from SP sellers, applied to 73 categories) selects four categories in 2018: watches_gifts, bed_bath_table, baby and office_furniture. SP sellers made 76.9–87.2% of their sales outside SP and 82.0–93.1% inside SP. In bed_bath_table, SP has 95 active sellers selling outside SP against 9 for SC, the second state by sales. Product IDs are almost always seller-specific (96.3% of 32,951 sold IDs had one seller; 482 appeared with both SP and non-SP sellers), so prices cannot be compared on the same product. These are descriptive results: they do not say whether buyers prefer SP sellers or have no local alternative.
+
+Still to come in Chapter 2: freight by seller origin, delivery times crossed with seller and buyer location (2017 vs 2018), and the chapter conclusion. No causal explanation is drawn from these results.
 
 ### Guided Checks and Work to Revisit
 
