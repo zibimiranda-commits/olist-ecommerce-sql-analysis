@@ -1,7 +1,7 @@
 # Olist E-commerce SQL Analysis
 
 **How did sales performance change between January–August 2017 and January–August 2018, and what factors are associated with that change?**
-
+ 
 ## About This Project
 
 This is an independent portfolio project built with SQL Server and the public Brazilian Olist e-commerce dataset. I treat it like a business investigation: I start from one question, test possible explanations one at a time, check the quality of the data behind each result, and only then draw conclusions. Every result is descriptive. The analysis shows what changed and what is associated with the change; it does not claim to prove why.
