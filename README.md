@@ -283,9 +283,57 @@ Among buyers outside SP, SP sellers made 62.1% (2017) and 61.3% (2018) of purcha
 
 ### Episode 16: What Does It Cost to Buy from São Paulo?
 
-**Business question:** Do buyers outside SP pay less freight when they buy from SP sellers?
+**Business question:** Could lower freight charges help explain why buyers outside SP purchase so much from SP sellers?
 
-For buyers outside SP, median freight per item in January–August 2018 was R$ 13.69 from same-state sellers, R$ 18.76 from SP sellers and R$ 22.36 from sellers in other states (2,546, 23,081 and 8,510 items); total freight as a share of item sales was 11.5%, 20.3% and 18.6%. From 2017 to 2018 median freight rose 9.3% (SP), 9.7% (same state) and 15.4% (other states). In the 8 largest buyer states, SP average freight was higher than local freight wherever there were 30+ local items (by R$ 3.14 to R$ 11.73); local sellers made only 1.5% to 2.9% of items in BA, DF and GO. Within categories (2018), SP median freight was R$ 6.50, R$ 5.14 and R$ 9.05 above same-state sellers in baby, bed_bath_table and watches_gifts; against other-state sellers the difference varied by category (+R$ 0.04, −R$ 4.46, −R$ 1.32, against −R$ 3.60 nationally). Freight is the amount charged to the buyer, not the carrier's cost; a buyer state or category does not control exact distance or identical packages; local sales are too few to cross state and category (office_furniture is not read). The results do not show whether freight influenced buyers' choices.
+Episode 15 showed that SP sellers accounted for most item sales to buyers outside SP, but category and product comparisons could not establish why. I next examined freight charged to buyers: was buying from SP cheaper than buying from sellers in the buyer’s own state or in other states?
+
+**SQL approach**
+
+The dedicated script divides purchases by buyers outside SP into three seller origins: same-state sellers, SP sellers and sellers in other states.
+
+I first compare item counts, item sales, median freight per item and total freight as a share of item sales for January–August 2017 and 2018. A `CASE` expression classifies seller origin using registered buyer and seller states, while `PERCENTILE_CONT` calculates median freight.
+
+I then repeat the comparison within the eight largest buyer states by 2018 item count and within the four categories selected in Episode 15. A minimum of **30 items per comparison group** limits the interpretation of small samples. The category analysis also examines median product weight.
+
+**Verified findings**
+
+In January–August 2018, freight differed by seller origin for buyers outside SP:
+
+| Seller origin | Items | Median freight per item | Total freight / item sales |
+| --- | ---: | ---: | ---: |
+| Same-state sellers | 2,546 | R$ 13.69 | 11.5% |
+| SP sellers | 23,081 | R$ 18.76 | 20.3% |
+| Other-state sellers | 8,510 | R$ 22.36 | 18.6% |
+
+Same-state sellers had the lowest median freight. SP sellers charged less than other-state sellers in absolute median freight, but their total freight represented a higher proportion of item sales. These measures describe different aspects of freight charges.
+
+Median freight increased between 2017 and 2018 for all three origins. For SP sellers, it rose from **R$ 17.16 to R$ 18.76 (+9.3%)**; the increases were **9.7%** for same-state sellers and **15.4%** for other-state sellers.
+
+The state-level comparison provided a more specific check. Among the eight largest buyer states, SP sellers had higher average freight than same-state sellers wherever the local group contained at least 30 items. The difference ranged from approximately **R$ 3 to R$ 12**. Groups below that threshold, including BA’s local sellers, were not interpreted.
+
+Within the selected categories, SP median freight exceeded same-state freight by **R$ 6.50 in baby**, **R$ 5.14 in bed_bath_table** and **R$ 9.05 in watches_gifts**.
+
+Compared with other-state sellers, the pattern varied: SP freight was approximately equal in baby (R$ 0.04 higher), R$ 4.46 lower in bed_bath_table and R$ 1.32 lower in watches_gifts. The national difference was R$ 3.60 in favour of SP sellers. Median product weights also differed between origins; in baby, for example, the median was 950 g for SP sellers and 450 g for same-state sellers.
+
+**Checks and limitations**
+
+The three seller origins reconciled to **R$ 1,987,787.18** in item sales to buyers outside SP in 2017 and **R$ 4,410,293.57** in 2018. No item had missing freight. A separate state-level control confirmed **12,478 items in 2017** and **27,577 in 2018** within the eight-state comparison. Category sales also reconciled to Episode 15, including **R$ 267,279.41** for bed_bath_table.
+
+The 30-item threshold is an analytical choice, not a statistical significance test. It prevented comparisons for groups with too few recorded purchases, including the local and other-state groups in office_furniture.
+
+Freight represents the amount charged to buyers, not the carrier’s actual cost. Comparing buyers within the same state does not control exact shipping distance, and comparing purchases within a category does not ensure identical products, weights or package dimensions.
+
+The dataset records completed purchases, not the full set of alternatives available to buyers. These comparisons therefore cannot establish whether freight influenced their decisions or explain SP sellers’ sales dominance.
+
+The analyses use purchase timestamps and registered buyer and seller states, with no order-status filter. Queries 1 and 2 cover January–August 2017 and 2018; the category comparison covers January–August 2018 only. Item sales exclude freight.
+
+**SQL script:** [Freight by seller origin, buyer state and category](sql/22_chapter2_freight.sql)
+
+**Query visuals:** [Episode 16](images/episode-16)
+
+**Next question**
+
+Freight did not provide a consistent cost advantage for SP sellers over same-state sellers in the groups examined. But delivery involves more than price. Episode 17 will examine how quickly orders arrived and whether delivery punctuality differed by seller and buyer location.
 
 Still to come in Chapter 2: delivery times crossed with seller and buyer location (2017 vs 2018) and the chapter conclusion. No causal explanation is drawn from these results.
 
