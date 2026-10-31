@@ -31,7 +31,7 @@ The comparison uses the same eight calendar months in both years (January–Augu
 | Chapter | Question | Status |
 | --- | --- | --- |
 | **Chapter 1: What changed?** (Episodes 1–10) | How big was the growth, and was it driven by more buyers, more categories, new products or more sellers? Did buyers come back? | Done |
-| **Chapter 2: Where did growth happen?** | Clean the city and state data, measure the weight of São Paulo on the seller and buyer side, see what distinguishes it (basket, categories, freight) and compare delivery times by location, 2017 vs 2018 | In progress (Episodes 11–15 done; next: freight, delivery times, conclusion) |
+| **Chapter 2: Where did growth happen?** | Clean the city and state data, measure the weight of São Paulo on the seller and buyer side, see what distinguishes it (basket, categories, freight) and compare delivery times by location, 2017 vs 2018 | In progress (Episodes 11–16 done; next: delivery times, conclusion) |
 | **Chapter 3: Why did buyers not come back?** | Order status, customer reviews and comments, delivery delays and their link to repeat orders | Planned |
 
 Each chapter ends with a conclusion before the next one begins. If a verified result justifies changing this plan, the change is documented in the [analysis log](ANALYSIS_LOG.md).
@@ -100,6 +100,7 @@ The period-comparison file contains the three separate queries supplied by the p
 | Seller-city concentration (Chapter 2, Episode 13) | [Active sellers, cities and sales by seller state; intensity per city; concentration inside SP](sql/19_chapter2_seller_city_concentration.sql) | 1,227 → 2,383 active sellers in 335 → 490 cities; SP: 723 → 1,417 sellers in 141 → 195 cities; in 2018 the largest SP city holds 31.2% of city-attributed SP item sales, 6 cities pass 50% and 25 reach 80% |
 | Buyer geography (Chapter 2, Episode 14) | [Buyers and sales by buyer state; destination of SP sellers' sales; origin of each state's purchases; buyer cities](sql/20_chapter2_buyer_geography.sql) | SP buyers: 44.1% of 2018 buyers (23,284 of 52,743) and 40.3% of item sales; SP buyers took 38.7% (2017) and 43.6% (2018) of SP sellers' item sales, the rest went to other states; 4 (2017) and 9 (2018) buyers ordered from several states |
 | SP sellers and buyers outside SP (Chapter 2, Episode 15) | [Origin of purchases, category rule, seller states, product-ID overlap](sql/21_chapter2_sp_dominance.sql) | Buyers outside SP: 62.1% (2017) and 61.3% (2018) of purchase value came from SP sellers (R$ 2,705,031.81 of 4,410,293.57 in 2018), 8.0% from their own state; four categories pass the rule (above R$ 50,000 outside SP and at least 75% from SP sellers), SP sellers 76.9–87.2% of their sales outside SP; 96.3% of 32,951 sold product IDs had one seller |
+| Freight by seller origin (Chapter 2, Episode 16) | [Freight by seller origin and year, same buyer state, same category](sql/22_chapter2_freight.sql) | Buyers outside SP, 2018 median freight per item: R$ 13.69 from same-state sellers, R$ 18.76 from SP sellers, R$ 22.36 from other-state sellers (2,546 / 23,081 / 8,510 items); in every readable state cell (30+ local items) SP average freight was R$ 3.14 to R$ 11.73 above local freight; in baby, bed_bath_table and watches_gifts SP median freight was R$ 6.50, 5.14 and 9.05 above same-state sellers |
 | Sellers and states | [Seller counts, state comparison and state sales](sql/05_sellers_and_states.sql) | [Verified totals and state tables](VERIFIED_RESULTS_2026_10_15.md#4-sellers-and-item-sales-by-state) |
 | SP city labels | [Distinct recorded city labels](sql/06_sp_products_and_cities.sql) | [151 / 228, provisional while cleaning continues](VERIFIED_RESULTS_2026_10_15.md#5-sp-city-labels--provisional) |
 
@@ -235,7 +236,7 @@ In Chapter 3, I plan to return to the question that emerged from Chapter 1: why 
 
 ## Chapter 2 | Geography and Data Quality
 
-Scripts: [geography audit](sql/16_chapter2_geography_audit.sql), [seller city mapping table](sql/17_seller_city_map.sql), [checks and seller geography](sql/18_chapter2_checks_and_seller_geography.sql) (Episodes 11–12), [seller-city concentration](sql/19_chapter2_seller_city_concentration.sql) (Episode 13), [buyer geography](sql/20_chapter2_buyer_geography.sql) (Episode 14), [SP sellers and buyers outside SP](sql/21_chapter2_sp_dominance.sql) (Episode 15). Results were executed in SSMS by the analyst between 20 and 28 October 2026 and tie to the validated totals.
+Scripts: [geography audit](sql/16_chapter2_geography_audit.sql), [seller city mapping table](sql/17_seller_city_map.sql), [checks and seller geography](sql/18_chapter2_checks_and_seller_geography.sql) (Episodes 11–12), [seller-city concentration](sql/19_chapter2_seller_city_concentration.sql) (Episode 13), [buyer geography](sql/20_chapter2_buyer_geography.sql) (Episode 14), [SP sellers and buyers outside SP](sql/21_chapter2_sp_dominance.sql) (Episode 15), [freight by seller origin](sql/22_chapter2_freight.sql) (Episode 16). Results were executed in SSMS by the analyst between 20 and 30 October 2026 and tie to the validated totals.
 
 ### Episode 11: What Is in a City Name?
 
@@ -280,7 +281,13 @@ SP buyers are 44.1% of 2018 buyers (23,284 of 52,743) and 40.3% of item sales (R
 
 Among buyers outside SP, SP sellers made 62.1% (2017) and 61.3% (2018) of purchase value (R$ 2,705,031.81 of 4,410,293.57 in 2018); sellers from the buyer's own state made 6.1% then 8.0%. A rule fixed before the analysis (above R$ 50,000 outside SP and at least 75% from SP sellers, applied to 73 categories) selects four categories in 2018: watches_gifts, bed_bath_table, baby and office_furniture. SP sellers made 76.9–87.2% of their sales outside SP and 82.0–93.1% inside SP. In bed_bath_table, SP has 95 active sellers selling outside SP against 9 for SC, the second state by sales. Product IDs are almost always seller-specific (96.3% of 32,951 sold IDs had one seller; 482 appeared with both SP and non-SP sellers), so prices cannot be compared on the same product. These are descriptive results: they do not say whether buyers prefer SP sellers or have no local alternative.
 
-Still to come in Chapter 2: freight by seller origin, delivery times crossed with seller and buyer location (2017 vs 2018), and the chapter conclusion. No causal explanation is drawn from these results.
+### Episode 16: What Does It Cost to Buy from São Paulo?
+
+**Business question:** Do buyers outside SP pay less freight when they buy from SP sellers?
+
+For buyers outside SP, median freight per item in January–August 2018 was R$ 13.69 from same-state sellers, R$ 18.76 from SP sellers and R$ 22.36 from sellers in other states (2,546, 23,081 and 8,510 items); total freight as a share of item sales was 11.5%, 20.3% and 18.6%. From 2017 to 2018 median freight rose 9.3% (SP), 9.7% (same state) and 15.4% (other states). In the 8 largest buyer states, SP average freight was higher than local freight wherever there were 30+ local items (by R$ 3.14 to R$ 11.73); local sellers made only 1.5% to 2.9% of items in BA, DF and GO. Within categories (2018), SP median freight was R$ 6.50, R$ 5.14 and R$ 9.05 above same-state sellers in baby, bed_bath_table and watches_gifts; against other-state sellers the difference varied by category (+R$ 0.04, −R$ 4.46, −R$ 1.32, against −R$ 3.60 nationally). Freight is the amount charged to the buyer, not the carrier's cost; a buyer state or category does not control exact distance or identical packages; local sales are too few to cross state and category (office_furniture is not read). The results do not show whether freight influenced buyers' choices.
+
+Still to come in Chapter 2: delivery times crossed with seller and buyer location (2017 vs 2018) and the chapter conclusion. No causal explanation is drawn from these results.
 
 ### Guided Checks and Work to Revisit
 
